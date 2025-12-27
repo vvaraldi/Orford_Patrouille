@@ -132,11 +132,10 @@ Après déploiement, vous pourrez mettre à jour les autres applications pour po
 
 ## Prochaines étapes
 
-1. **Déployer** sur GitHub Pages
-2. **Mettre à jour** les applications existantes pour utiliser ce portail
+1. **Mettre à jour** les applications existantes pour utiliser ce portail
+2. **Optionnel**: Ajouter un lien de retour au portail dans les autres apps
 3. **Retirer** les pages de gestion utilisateurs de Inspection_Orford
 4. **Ajouter** Signalisation quand elle sera prête
-5. **Optionnel**: Ajouter un lien de retour au portail dans les autres apps
 
 ## Notes techniques
 

@@ -149,7 +149,7 @@ class PortalManager {
         id: 'signalisation',
         title: 'Signalisation',
         icon: '⚠️',
-        description: 'Système de gestion de la signalisation. Signalez les problèmes de signalisation et suivez leur résolution.',
+        description: 'Système de gestion de la signalisation.',
         url: null, // Not yet deployed
         actionText: 'Bientôt disponible',
         comingSoon: true
