@@ -1,5 +1,12 @@
 # Orford Patrouille - Portail Central
 
+
+Prochaine étapes :
+- SOrtir la page public d'ouverture des pistes de inspections pour la mettre en lien sur la page de Orford Patrouille dans la barre de navigation en haut si pas loggé ou comme une application
+- Réduire onsidérablement la taille de l'encadrer en haut qui est dit : "Orford Patrouille" "Système de gestion pour les patrouilleurs du Mont Orford"
+
+
+
 Portail d'accès centralisé pour les applications de patrouille du Mont Orford.
 
 ## Description
@@ -94,6 +101,7 @@ Le portail utilise le même projet Firebase que les autres applications :
   status: 'active' | 'inactive',
   allowInspection: boolean,  // Accès à Ski-Track
   allowInfraction: boolean,  // Accès aux Infractions
+  allowSignalisation: boolean,  // Accès aux Signalisations
   createdAt: timestamp,
   createdBy: string        // UID du créateur
 }
@@ -121,21 +129,8 @@ Pour créer un nouveau thème, ajoutez les variables dans `css/config/variables.
 
 ## Déploiement
 
-### GitHub Pages
-1. Créer un nouveau repository `Orford_Patrouille`
-2. Pousser le code
-3. Activer GitHub Pages (Settings > Pages > Source: main branch)
-4. L'URL sera: `https://vvaraldi.github.io/Orford_Patrouille/`
-
-### Mise à jour des liens
-Après déploiement, vous pourrez mettre à jour les autres applications pour pointer vers ce portail.
-
 ## Prochaines étapes
-
-1. **Mettre à jour** les applications existantes pour utiliser ce portail
-2. **Optionnel**: Ajouter un lien de retour au portail dans les autres apps
-3. **Retirer** les pages de gestion utilisateurs de Inspection_Orford
-4. **Ajouter** Signalisation quand elle sera prête
+1. **Ajouter** Signalisation quand elle sera prête
 
 ## Notes techniques
 

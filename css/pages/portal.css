@@ -8,7 +8,7 @@
   padding: var(--space-3xl) var(--space-md);
   background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   color: var(--color-white);
-  margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-md)) var(--space-2xl);
+  margin: calc(-1 * var(--space-md)) calc(-1 * var(--space-sm)) var(--space-md);
   position: relative;
   overflow: hidden;
 }
