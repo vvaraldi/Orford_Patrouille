@@ -1,0 +1,67 @@
+/* ========================================
+   COMPONENTS/TABS.CSS - Tab Styles
+   ======================================== */
+
+.tabs-container {
+  margin-bottom: var(--space-xl);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-sm);
+  border-bottom: 2px solid var(--theme-border);
+  padding-bottom: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--theme-text-light);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.tab-btn:hover {
+  color: var(--theme-primary);
+}
+
+.tab-btn.active {
+  color: var(--theme-primary);
+  border-bottom-color: var(--theme-primary);
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .tab-btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-sm);
+  }
+}

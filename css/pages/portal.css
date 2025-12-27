@@ -1,0 +1,247 @@
+/* ========================================
+   PAGES/PORTAL.CSS - Portal Page Styles
+   ======================================== */
+
+/* Portal Hero Section */
+.portal-hero {
+  text-align: center;
+  padding: var(--space-3xl) var(--space-md);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+  color: var(--color-white);
+  margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-md)) var(--space-2xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' opacity='0.1'%3E%3Cpath d='M100 0 L200 200 L0 200 Z' fill='%23ffffff'/%3E%3C/svg%3E");
+  background-size: 100px;
+  background-repeat: repeat;
+  opacity: 0.1;
+}
+
+.portal-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.portal-logo {
+  font-size: 4rem;
+  margin-bottom: var(--space-md);
+}
+
+.portal-title {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-sm);
+}
+
+.portal-subtitle {
+  font-size: var(--text-lg);
+  opacity: 0.9;
+}
+
+/* App Navigation Grid */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.app-card {
+  background-color: var(--theme-surface);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.app-card.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.app-card-header {
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, var(--app-color, var(--theme-primary)) 0%, var(--app-color-dark, var(--theme-primary-dark)) 100%);
+  color: var(--color-white);
+  text-align: center;
+}
+
+.app-card-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+}
+
+.app-card-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  margin: 0;
+}
+
+.app-card-body {
+  padding: var(--space-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-card-description {
+  color: var(--theme-text-light);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-md);
+  flex: 1;
+}
+
+.app-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--theme-primary);
+  font-weight: var(--font-medium);
+}
+
+.app-card-action-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.app-card:hover .app-card-action-arrow {
+  transform: translateX(4px);
+}
+
+/* App color variants */
+.app-card[data-app="inspection"] {
+  --app-color: #1b4b72;
+  --app-color-dark: #0d2b42;
+}
+
+.app-card[data-app="infraction"] {
+  --app-color: #dc2626;
+  --app-color-dark: #b91c1c;
+}
+
+.app-card[data-app="signalisation"] {
+  --app-color: #f59e0b;
+  --app-color-dark: #d97706;
+}
+
+.app-card[data-app="admin"] {
+  --app-color: #7c3aed;
+  --app-color-dark: #5b21b6;
+}
+
+/* Access denied overlay */
+.app-card-locked {
+  position: relative;
+}
+
+.app-card-locked::after {
+  content: "🔒 Accès non autorisé";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-medium);
+  border-radius: var(--border-radius-xl);
+}
+
+/* User Welcome Section */
+.user-welcome {
+  background-color: var(--theme-surface);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.user-welcome-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-weight: var(--font-bold);
+  font-size: var(--text-lg);
+}
+
+.user-welcome-text h3 {
+  font-size: var(--text-lg);
+  margin: 0 0 var(--space-xs);
+}
+
+.user-welcome-text p {
+  font-size: var(--text-sm);
+  color: var(--theme-text-light);
+  margin: 0;
+}
+
+.user-welcome-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-top: var(--space-xl);
+}
+
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--border-radius-md);
+  color: var(--theme-text);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quick-action-btn:hover {
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+}
+
+.quick-action-btn .icon {
+  font-size: 1.2em;
+}

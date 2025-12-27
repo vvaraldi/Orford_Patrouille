@@ -1,0 +1,21 @@
+/* ========================================
+   LAYOUT/FOOTER.CSS - Footer Styles
+   ======================================== */
+
+.footer {
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-300);
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  font-size: var(--text-sm);
+  margin-top: auto;
+}
+
+.footer a {
+  color: var(--color-gray-200);
+  text-decoration: underline;
+}
+
+.footer a:hover {
+  color: var(--color-white);
+}

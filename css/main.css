@@ -1,0 +1,62 @@
+/* ========================================
+   MAIN.CSS - Orford Patrouille Portal
+   ========================================
+   Main entry point for all CSS styles
+   ======================================== */
+
+/* 1. Configuration (Variables & Themes) */
+@import 'config/variables.css';
+
+/* 2. Base Styles (Reset & Typography) */
+@import 'base/reset.css';
+@import 'base/typography.css';
+
+/* 3. Layout Structure */
+@import 'layout/header.css';
+@import 'layout/main.css';
+@import 'layout/footer.css';
+
+/* 4. Core Components */
+@import 'components/buttons.css';
+@import 'components/cards.css';
+@import 'components/forms.css';
+@import 'components/tables.css';
+@import 'components/modals.css';
+@import 'components/alerts.css';
+@import 'components/tabs.css';
+
+/* 5. Page-Specific Styles */
+@import 'pages/portal.css';
+@import 'pages/auth.css';
+@import 'pages/admin.css';
+
+/* 6. Utility Classes */
+@import 'utilities/helpers.css';
+
+/* 7. Responsive Design */
+@import 'responsive/breakpoints.css';
+
+/* ========================================
+   GLOBAL LAYOUT
+   ======================================== */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Background pattern (from Ski-Track) */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' opacity='0.03'%3E%3Cpath d='M100 0 L200 200 L0 200 Z' fill='%231b4b72'/%3E%3C/svg%3E");
+  background-size: 100px;
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: -1;
+}

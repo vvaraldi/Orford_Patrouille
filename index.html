@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orford Patrouille - Portail</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏔️</text></svg>">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <div class="nav-logo">
+        <span class="nav-logo-icon">🏔️</span>
+        Orford Patrouille
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="active">Accueil</a>
+        <a href="pages/admin.html" id="admin-link" style="display: none;">Gestion utilisateurs</a>
+        <a href="pages/change-password.html" id="password-link" style="display: none;">Mot de passe</a>
+        <a href="pages/login.html" id="login-link">Connexion</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+    </nav>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+      <div class="mobile-nav-header">
+        <div class="logo">🏔️ Orford Patrouille</div>
+        <button class="mobile-nav-close" id="mobile-nav-close">✕</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html" class="active">Accueil</a>
+        <a href="pages/admin.html" id="mobile-admin-link" style="display: none;">Gestion utilisateurs</a>
+        <a href="pages/change-password.html" id="mobile-password-link" style="display: none;">Mot de passe</a>
+        <a href="pages/login.html" id="mobile-login-link">Connexion</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading Screen -->
+  <div id="loading" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="main-content" class="main" style="display: none;">
+    
+    <!-- Login Prompt (shown when not authenticated) -->
+    <div id="login-prompt" style="display: none;">
+      <div class="portal-hero">
+        <div class="portal-hero-content">
+          <div class="portal-logo">🏔️</div>
+          <h1 class="portal-title">Orford Patrouille</h1>
+          <p class="portal-subtitle">Système de gestion pour les patrouilleurs du Mont Orford</p>
+        </div>
+      </div>
+      
+      <div class="content-section">
+        <div class="auth-container" style="min-height: auto; padding: var(--space-xl);">
+          <div class="auth-card">
+            <div class="auth-header">
+              <h2 class="auth-title">Bienvenue</h2>
+              <p class="auth-subtitle">Connectez-vous pour accéder aux applications</p>
+            </div>
+            <a href="pages/login.html" class="btn btn-primary btn-full btn-lg">
+              Se connecter
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal Section (shown when authenticated) -->
+    <div id="portal-section" style="display: none;">
+      
+      <!-- Hero Section -->
+      <div class="portal-hero">
+        <div class="portal-hero-content">
+          <div class="portal-logo">🏔️</div>
+          <h1 class="portal-title">Orford Patrouille</h1>
+          <p class="portal-subtitle">Système de gestion pour les patrouilleurs du Mont Orford</p>
+        </div>
+      </div>
+
+      <!-- User Welcome Section -->
+      <div class="user-welcome">
+        <div class="user-welcome-info">
+          <div class="user-avatar" id="user-initials">--</div>
+          <div class="user-welcome-text">
+            <h3 id="welcome-name">Bonjour</h3>
+            <p id="welcome-role">Chargement...</p>
+          </div>
+        </div>
+        <div class="user-welcome-actions">
+          <a href="pages/change-password.html" class="btn btn-secondary btn-sm">
+            🔑 Mot de passe
+          </a>
+          <a href="#" id="logout-btn" class="btn btn-outline btn-sm" onclick="handleLogout(event)">
+            Déconnexion
+          </a>
+        </div>
+      </div>
+
+      <!-- Applications Grid -->
+      <h2 class="mb-lg">Applications disponibles</h2>
+      
+      <div class="app-grid">
+        
+        <!-- Inspection App -->
+        <a href="#" class="app-card" data-app="inspection">
+          <div class="app-card-header">
+            <div class="app-card-icon">🔍</div>
+            <h3 class="app-card-title">Inspection piste de rando</h3>
+          </div>
+          <div class="app-card-body">
+            <p class="app-card-description">
+              Système d'inspection des sentiers et abris. Créez des rapports d'inspection, 
+              consultez l'historique et gérez le statut des pistes.
+            </p>
+            <div class="app-card-action">
+              <span>Accéder à l'application</span>
+              <span class="app-card-action-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Infraction App -->
+        <a href="#" class="app-card" data-app="infraction">
+          <div class="app-card-header">
+            <div class="app-card-icon">🚨</div>
+            <h3 class="app-card-title">Infraction</h3>
+          </div>
+          <div class="app-card-body">
+            <p class="app-card-description">
+              Système de gestion des infractions. Enregistrez les infractions constatées 
+              et consultez l'historique des rapports.
+            </p>
+            <div class="app-card-action">
+              <span>Accéder à l'application</span>
+              <span class="app-card-action-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Signalisation App (Coming Soon) -->
+        <div class="app-card disabled" data-app="signalisation">
+          <div class="app-card-header">
+            <div class="app-card-icon">⚠️</div>
+            <h3 class="app-card-title">Signalisation</h3>
+          </div>
+          <div class="app-card-body">
+            <p class="app-card-description">
+              Système de gestion de la signalisation. Signalez les problèmes de signalisation 
+              et suivez leur résolution.
+            </p>
+            <div class="app-card-action">
+              <span>Bientôt disponible</span>
+              <span class="app-card-action-arrow">🔜</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin App (Admin Only) -->
+        <a href="#" class="app-card" data-app="admin">
+          <div class="app-card-header">
+            <div class="app-card-icon">👥</div>
+            <h3 class="app-card-title">Gestion des utilisateurs</h3>
+          </div>
+          <div class="app-card-body">
+            <p class="app-card-description">
+              Administration des utilisateurs. Créez de nouveaux comptes, gérez les accès 
+              et les permissions des patrouilleurs.
+            </p>
+            <div class="app-card-action">
+              <span>Accéder à l'administration</span>
+              <span class="app-card-action-arrow">→</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="pages/change-password.html" class="quick-action-btn">
+          <span class="icon">🔑</span>
+          <span>Changer mon mot de passe</span>
+        </a>
+        <a href="pages/forgot-password.html" class="quick-action-btn">
+          <span class="icon">📧</span>
+          <span>Mot de passe oublié</span>
+        </a>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 Orford Patrouille - Mont Orford</p>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  
+  <!-- Application Scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/mobile-menu.js"></script>
+  <script src="js/portal.js"></script>
+</body>
+</html>

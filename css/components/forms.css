@@ -1,0 +1,137 @@
+/* ========================================
+   COMPONENTS/FORMS.CSS - Form Styles
+   ======================================== */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.form-label {
+  font-weight: var(--font-medium);
+  color: var(--theme-text);
+  font-size: var(--text-sm);
+}
+
+.form-label-required::after {
+  content: " *";
+  color: var(--color-danger);
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-base);
+  font-family: inherit;
+  color: var(--theme-text);
+  background-color: var(--theme-surface);
+  border: var(--border-width) solid var(--theme-border);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.form-control:disabled {
+  background-color: var(--color-gray-100);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-control::placeholder {
+  color: var(--color-gray-400);
+}
+
+/* Textarea */
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Select */
+select.form-control {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-md) center;
+  padding-right: var(--space-2xl);
+}
+
+/* Checkbox and Radio */
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.form-check-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--theme-primary);
+}
+
+.form-check-label {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Form grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-md);
+}
+
+/* Form help text */
+.form-help {
+  font-size: var(--text-xs);
+  color: var(--theme-text-light);
+  margin-top: var(--space-xs);
+}
+
+/* Form error */
+.form-control.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.form-error {
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+  margin-top: var(--space-xs);
+}
+
+/* Password strength indicator */
+.password-strength {
+  font-size: var(--text-xs);
+  margin-top: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-sm);
+}
+
+.password-strength.weak {
+  background-color: #fef2f2;
+  color: var(--color-danger);
+}
+
+.password-strength.medium {
+  background-color: #fffbeb;
+  color: var(--color-warning);
+}
+
+.password-strength.strong {
+  background-color: #f0fdf4;
+  color: var(--color-success);
+}

@@ -1,0 +1,58 @@
+/* ========================================
+   COMPONENTS/CARDS.CSS - Card Styles
+   ======================================== */
+
+.card {
+  background-color: var(--theme-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--theme-border);
+  background-color: var(--color-gray-50);
+}
+
+.card-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--theme-text);
+  margin: 0;
+}
+
+.card-body {
+  padding: var(--space-lg);
+}
+
+.card-footer {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--theme-border);
+  background-color: var(--color-gray-50);
+}
+
+/* Card variants */
+.card-bordered {
+  border: 1px solid var(--theme-border);
+  box-shadow: none;
+}
+
+.card-flat {
+  box-shadow: none;
+  border: 1px solid var(--theme-border);
+}
+
+/* Interactive card */
+.card-interactive {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
