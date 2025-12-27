@@ -166,6 +166,24 @@
   border-radius: var(--border-radius-xl);
 }
 
+/* No apps message */
+.no-apps-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-2xl);
+  background-color: var(--theme-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.no-apps-message p {
+  margin-bottom: var(--space-sm);
+}
+
+.no-apps-message p:last-child {
+  margin-bottom: 0;
+}
+
 /* User Welcome Section */
 .user-welcome {
   background-color: var(--theme-surface);

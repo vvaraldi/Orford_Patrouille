@@ -1,6 +1,9 @@
 /**
  * portal.js - Main Portal Page Logic
  * Handles the main portal dashboard functionality
+ * 
+ * App cards are dynamically generated based on user permissions
+ * Admin access requires: role=admin AND access to ALL apps
  */
 
 class PortalManager {
@@ -12,12 +15,6 @@ class PortalManager {
   init() {
     console.log('Initializing Portal Manager');
     
-    // Listen for authentication
-    document.addEventListener('userAuthenticated', (e) => {
-      this.userData = e.detail;
-      this.onUserAuthenticated();
-    });
-
     // Check auth with portal-specific options
     checkAuthStatus({
       requireAuth: false, // Allow viewing login button when not authenticated
@@ -34,17 +31,14 @@ class PortalManager {
   onUserAuthenticated() {
     console.log('User authenticated:', this.userData.name);
     
-    // Show authenticated UI
+    // Hide guest nav, show authenticated UI
     this.showAuthenticatedUI();
     
     // Update user welcome section
     this.updateWelcomeSection();
     
-    // Update app cards based on permissions
-    this.updateAppCards();
-    
-    // Bind app card clicks
-    this.bindAppCardEvents();
+    // Generate app cards based on permissions
+    this.generateAppCards();
   }
 
   onUserUnauthenticated() {
@@ -55,23 +49,23 @@ class PortalManager {
   }
 
   showAuthenticatedUI() {
-    const authSection = document.getElementById('auth-section');
-    const portalSection = document.getElementById('portal-section');
     const loginPrompt = document.getElementById('login-prompt');
+    const portalSection = document.getElementById('portal-section');
+    const navLinksGuest = document.getElementById('nav-links-guest');
     
-    if (authSection) authSection.style.display = 'none';
     if (loginPrompt) loginPrompt.style.display = 'none';
     if (portalSection) portalSection.style.display = 'block';
+    if (navLinksGuest) navLinksGuest.style.display = 'none';
   }
 
   showUnauthenticatedUI() {
-    const authSection = document.getElementById('auth-section');
-    const portalSection = document.getElementById('portal-section');
     const loginPrompt = document.getElementById('login-prompt');
+    const portalSection = document.getElementById('portal-section');
+    const navLinksGuest = document.getElementById('nav-links-guest');
     
-    if (authSection) authSection.style.display = 'block';
     if (loginPrompt) loginPrompt.style.display = 'block';
     if (portalSection) portalSection.style.display = 'none';
+    if (navLinksGuest) navLinksGuest.style.display = 'flex';
   }
 
   updateWelcomeSection() {
@@ -99,97 +93,128 @@ class PortalManager {
     }
   }
 
-  updateAppCards() {
-    // Inspection card
-    const inspectionCard = document.querySelector('[data-app="inspection"]');
-    if (inspectionCard) {
-      if (this.userData.allowInspection === false) {
-        this.lockAppCard(inspectionCard);
-      } else {
-        this.unlockAppCard(inspectionCard);
-      }
-    }
+  /**
+   * Check user access permissions
+   */
+  getAccessPermissions() {
+    const hasInspectionAccess = this.userData?.allowInspection !== false;
+    const hasInfractionAccess = this.userData?.allowInfraction === true;
+    const isAdmin = this.userData?.role === 'admin';
     
-    // Infraction card
-    const infractionCard = document.querySelector('[data-app="infraction"]');
-    if (infractionCard) {
-      if (this.userData.allowInfraction !== true) {
-        this.lockAppCard(infractionCard);
-      } else {
-        this.unlockAppCard(infractionCard);
-      }
-    }
+    // Admin panel requires: admin role AND access to ALL apps
+    const hasFullAdminAccess = isAdmin && hasInspectionAccess && hasInfractionAccess;
     
-    // Admin card - only for admins
-    const adminCard = document.querySelector('[data-app="admin"]');
-    if (adminCard) {
-      if (this.userData.role !== 'admin') {
-        this.lockAppCard(adminCard);
-      } else {
-        this.unlockAppCard(adminCard);
-      }
-    }
-    
-    // Signalisation card - coming soon, always disabled for now
-    const signalisationCard = document.querySelector('[data-app="signalisation"]');
-    if (signalisationCard) {
-      signalisationCard.classList.add('disabled');
-      const actionText = signalisationCard.querySelector('.app-card-action span');
-      if (actionText) {
-        actionText.textContent = 'Bientôt disponible';
-      }
-    }
-  }
-
-  lockAppCard(card) {
-    card.classList.add('app-card-locked', 'disabled');
-    card.style.pointerEvents = 'none';
-  }
-
-  unlockAppCard(card) {
-    card.classList.remove('app-card-locked', 'disabled');
-    card.style.pointerEvents = 'auto';
-  }
-
-  bindAppCardEvents() {
-    const appCards = document.querySelectorAll('.app-card:not(.disabled)');
-    
-    appCards.forEach(card => {
-      card.addEventListener('click', (e) => {
-        e.preventDefault();
-        const appType = card.dataset.app;
-        this.navigateToApp(appType);
-      });
-    });
-  }
-
-  navigateToApp(appType) {
-    const appUrls = {
-      'inspection': 'https://vvaraldi.github.io/Inspection_Rando_Orford/index.html',
-      'infraction': 'https://vvaraldi.github.io/Infraction_Orford/index.html',
-      'admin': 'pages/admin.html',
-      'signalisation': null // Coming soon
+    return {
+      inspection: hasInspectionAccess,
+      infraction: hasInfractionAccess,
+      admin: hasFullAdminAccess,
+      signalisation: false // Coming soon - always hidden for now
     };
+  }
 
-    const url = appUrls[appType];
+  /**
+   * Generate app cards dynamically based on user permissions
+   */
+  generateAppCards() {
+    const appGrid = document.getElementById('app-grid');
+    if (!appGrid) return;
     
-    if (url) {
-      // Navigate in the same window
-      window.location.href = url;
+    const permissions = this.getAccessPermissions();
+    
+    // Clear existing cards
+    appGrid.innerHTML = '';
+    
+    // Define available apps
+    const apps = [
+      {
+        id: 'inspection',
+        title: 'Inspection piste de rando',
+        icon: '🔍',
+        description: 'Système d\'inspection des sentiers et abris. Créez des rapports d\'inspection, consultez l\'historique et gérez le statut des pistes.',
+        url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/index.html',
+        actionText: 'Accéder à l\'application'
+      },
+      {
+        id: 'infraction',
+        title: 'Infraction',
+        icon: '🚨',
+        description: 'Système de gestion des infractions. Enregistrez les infractions constatées et consultez l\'historique des rapports.',
+        url: 'https://vvaraldi.github.io/Infraction_Orford/index.html',
+        actionText: 'Accéder à l\'application'
+      },
+      {
+        id: 'admin',
+        title: 'Gestion des utilisateurs',
+        icon: '👥',
+        description: 'Administration des utilisateurs. Créez de nouveaux comptes, gérez les accès et les permissions des patrouilleurs.',
+        url: 'pages/admin.html',
+        actionText: 'Accéder à l\'administration'
+      }
+      // Signalisation will be added here when ready
+    ];
+    
+    // Generate cards only for accessible apps
+    let cardsGenerated = 0;
+    
+    apps.forEach(app => {
+      if (permissions[app.id]) {
+        const card = this.createAppCard(app);
+        appGrid.appendChild(card);
+        cardsGenerated++;
+      }
+    });
+    
+    // Show message if no apps available
+    if (cardsGenerated === 0) {
+      appGrid.innerHTML = `
+        <div class="no-apps-message">
+          <p>Aucune application n'est disponible pour votre compte.</p>
+          <p class="text-muted text-sm">Contactez un administrateur pour obtenir les accès nécessaires.</p>
+        </div>
+      `;
     }
   }
 
   /**
-   * Get app access summary for current user
-   * @returns {Object} Access summary
+   * Create a single app card element
    */
-  getAccessSummary() {
-    return {
-      inspection: this.userData?.allowInspection !== false,
-      infraction: this.userData?.allowInfraction === true,
-      admin: this.userData?.role === 'admin',
-      signalisation: false // Coming soon
-    };
+  createAppCard(app) {
+    const card = document.createElement('a');
+    card.href = '#';
+    card.className = 'app-card';
+    card.dataset.app = app.id;
+    
+    card.innerHTML = `
+      <div class="app-card-header">
+        <div class="app-card-icon">${app.icon}</div>
+        <h3 class="app-card-title">${app.title}</h3>
+      </div>
+      <div class="app-card-body">
+        <p class="app-card-description">${app.description}</p>
+        <div class="app-card-action">
+          <span>${app.actionText}</span>
+          <span class="app-card-action-arrow">→</span>
+        </div>
+      </div>
+    `;
+    
+    // Add click handler
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.navigateToApp(app.id, app.url);
+    });
+    
+    return card;
+  }
+
+  /**
+   * Navigate to an app
+   */
+  navigateToApp(appType, url) {
+    if (url) {
+      // Navigate in the same window
+      window.location.href = url;
+    }
   }
 }
 

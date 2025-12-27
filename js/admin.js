@@ -50,14 +50,24 @@ class AdminManager {
                 return;
               }
               
-              // Check if admin
+              // Check if admin role
               if (userData.role !== 'admin') {
                 this.showAccessDenied('Accès réservé aux administrateurs');
                 resolve(false);
                 return;
               }
               
-              // Admin verified - show content
+              // Check if has access to ALL apps (required for user management)
+              const hasInspectionAccess = userData.allowInspection !== false;
+              const hasInfractionAccess = userData.allowInfraction === true;
+              
+              if (!hasInspectionAccess || !hasInfractionAccess) {
+                this.showAccessDenied('Accès réservé aux administrateurs ayant accès à toutes les applications');
+                resolve(false);
+                return;
+              }
+              
+              // Full admin verified - show content
               this.showMainContent();
               this.initializeElements();
               this.bindEvents();

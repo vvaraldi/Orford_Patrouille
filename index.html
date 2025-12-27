@@ -9,35 +9,18 @@
 </head>
 
 <body>
-  <!-- Header -->
+  <!-- Header - Minimal on portal home -->
   <header class="header">
     <nav class="nav">
       <div class="nav-logo">
         <span class="nav-logo-icon">🏔️</span>
         Orford Patrouille
       </div>
-      <div class="nav-links">
-        <a href="index.html" class="active">Accueil</a>
-        <a href="pages/admin.html" id="admin-link" style="display: none;">Gestion utilisateurs</a>
-        <a href="pages/change-password.html" id="password-link" style="display: none;">Mot de passe</a>
+      <!-- Login link only shown when not authenticated -->
+      <div class="nav-links" id="nav-links-guest">
         <a href="pages/login.html" id="login-link">Connexion</a>
       </div>
-      <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
     </nav>
-    
-    <!-- Mobile Navigation -->
-    <div class="mobile-nav" id="mobile-nav">
-      <div class="mobile-nav-header">
-        <div class="logo">🏔️ Orford Patrouille</div>
-        <button class="mobile-nav-close" id="mobile-nav-close">✕</button>
-      </div>
-      <div class="mobile-nav-links">
-        <a href="index.html" class="active">Accueil</a>
-        <a href="pages/admin.html" id="mobile-admin-link" style="display: none;">Gestion utilisateurs</a>
-        <a href="pages/change-password.html" id="mobile-password-link" style="display: none;">Mot de passe</a>
-        <a href="pages/login.html" id="mobile-login-link">Connexion</a>
-      </div>
-    </div>
   </header>
 
   <!-- Loading Screen -->
@@ -101,7 +84,7 @@
           <a href="pages/change-password.html" class="btn btn-secondary btn-sm">
             🔑 Mot de passe
           </a>
-          <a href="#" id="logout-btn" class="btn btn-outline btn-sm" onclick="handleLogout(event)">
+          <a href="#" class="btn btn-outline btn-sm" onclick="handleLogout(event)">
             Déconnexion
           </a>
         </div>
@@ -110,92 +93,8 @@
       <!-- Applications Grid -->
       <h2 class="mb-lg">Applications disponibles</h2>
       
-      <div class="app-grid">
-        
-        <!-- Inspection App -->
-        <a href="#" class="app-card" data-app="inspection">
-          <div class="app-card-header">
-            <div class="app-card-icon">🔍</div>
-            <h3 class="app-card-title">Inspection piste de rando</h3>
-          </div>
-          <div class="app-card-body">
-            <p class="app-card-description">
-              Système d'inspection des sentiers et abris. Créez des rapports d'inspection, 
-              consultez l'historique et gérez le statut des pistes.
-            </p>
-            <div class="app-card-action">
-              <span>Accéder à l'application</span>
-              <span class="app-card-action-arrow">→</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- Infraction App -->
-        <a href="#" class="app-card" data-app="infraction">
-          <div class="app-card-header">
-            <div class="app-card-icon">🚨</div>
-            <h3 class="app-card-title">Infraction</h3>
-          </div>
-          <div class="app-card-body">
-            <p class="app-card-description">
-              Système de gestion des infractions. Enregistrez les infractions constatées 
-              et consultez l'historique des rapports.
-            </p>
-            <div class="app-card-action">
-              <span>Accéder à l'application</span>
-              <span class="app-card-action-arrow">→</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- Signalisation App (Coming Soon) -->
-        <div class="app-card disabled" data-app="signalisation">
-          <div class="app-card-header">
-            <div class="app-card-icon">⚠️</div>
-            <h3 class="app-card-title">Signalisation</h3>
-          </div>
-          <div class="app-card-body">
-            <p class="app-card-description">
-              Système de gestion de la signalisation. Signalez les problèmes de signalisation 
-              et suivez leur résolution.
-            </p>
-            <div class="app-card-action">
-              <span>Bientôt disponible</span>
-              <span class="app-card-action-arrow">🔜</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Admin App (Admin Only) -->
-        <a href="#" class="app-card" data-app="admin">
-          <div class="app-card-header">
-            <div class="app-card-icon">👥</div>
-            <h3 class="app-card-title">Gestion des utilisateurs</h3>
-          </div>
-          <div class="app-card-body">
-            <p class="app-card-description">
-              Administration des utilisateurs. Créez de nouveaux comptes, gérez les accès 
-              et les permissions des patrouilleurs.
-            </p>
-            <div class="app-card-action">
-              <span>Accéder à l'administration</span>
-              <span class="app-card-action-arrow">→</span>
-            </div>
-          </div>
-        </a>
-
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <a href="pages/change-password.html" class="quick-action-btn">
-          <span class="icon">🔑</span>
-          <span>Changer mon mot de passe</span>
-        </a>
-        <a href="pages/forgot-password.html" class="quick-action-btn">
-          <span class="icon">📧</span>
-          <span>Mot de passe oublié</span>
-        </a>
+      <div class="app-grid" id="app-grid">
+        <!-- App cards will be dynamically inserted based on user permissions -->
       </div>
 
     </div>
