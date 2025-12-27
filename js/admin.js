@@ -60,8 +60,9 @@ class AdminManager {
               // Check if has access to ALL apps (required for user management)
               const hasInspectionAccess = userData.allowInspection !== false;
               const hasInfractionAccess = userData.allowInfraction === true;
+              const hasSignalisationAccess = userData.allowSignalisation === true;
               
-              if (!hasInspectionAccess || !hasInfractionAccess) {
+              if (!hasInspectionAccess || !hasInfractionAccess || !hasSignalisationAccess) {
                 this.showAccessDenied('Accès réservé aux administrateurs ayant accès à toutes les applications');
                 resolve(false);
                 return;
@@ -185,7 +186,8 @@ class AdminManager {
       role: document.getElementById('user-role').value,
       status: document.getElementById('user-status').value,
       allowInspection: document.getElementById('user-allow-inspection')?.checked ?? true,
-      allowInfraction: document.getElementById('user-allow-infraction')?.checked ?? true
+      allowInfraction: document.getElementById('user-allow-infraction')?.checked ?? true,
+      allowSignalisation: document.getElementById('user-allow-signalisation')?.checked ?? true
     };
 
     if (!this.validateUserForm(userData)) {
@@ -216,6 +218,7 @@ class AdminManager {
         status: userData.status,
         allowInspection: userData.allowInspection,
         allowInfraction: userData.allowInfraction,
+        allowSignalisation: userData.allowSignalisation,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         createdBy: this.currentUserId
       });
@@ -282,8 +285,10 @@ class AdminManager {
       // Re-check the default checkboxes
       const allowInspection = document.getElementById('user-allow-inspection');
       const allowInfraction = document.getElementById('user-allow-infraction');
+      const allowSignalisation = document.getElementById('user-allow-signalisation');
       if (allowInspection) allowInspection.checked = true;
       if (allowInfraction) allowInfraction.checked = true;
+      if (allowSignalisation) allowSignalisation.checked = true;
     }
   }
 
@@ -353,6 +358,9 @@ class AdminManager {
     const infractionAccessClass = userData.allowInfraction === true ? 'access-granted' : 'access-denied';
     const infractionAccessText = userData.allowInfraction === true ? '✓ Infraction' : '✗ Infraction';
 
+    const signalisationAccessClass = userData.allowSignalisation === true ? 'access-granted' : 'access-denied';
+    const signalisationAccessText = userData.allowSignalisation === true ? '✓ Signalisation' : '✗ Signalisation';
+
     row.innerHTML = `
       <td class="user-name-cell" data-user-id="${userId}" style="cursor: pointer;">
         ${userData.name}
@@ -389,6 +397,12 @@ class AdminManager {
                   data-access-type="infraction"
                   data-current-access="${userData.allowInfraction === true}">
             ${infractionAccessText}
+          </button>
+          <button class="access-badge ${signalisationAccessClass}" 
+                  data-user-id="${userId}" 
+                  data-access-type="signalisation"
+                  data-current-access="${userData.allowSignalisation === true}">
+            ${signalisationAccessText}
           </button>
         </div>
       </td>
@@ -528,13 +542,23 @@ class AdminManager {
     try {
       buttonElement.disabled = true;
       
-      const updateField = accessType === 'inspection' ? 'allowInspection' : 'allowInfraction';
+      const updateFieldMap = {
+        'inspection': 'allowInspection',
+        'infraction': 'allowInfraction',
+        'signalisation': 'allowSignalisation'
+      };
+      const updateField = updateFieldMap[accessType];
       
       await this.db.collection('inspectors').doc(userId).update({
         [updateField]: newAccess
       });
 
-      const accessText = accessType === 'inspection' ? 'Inspection' : 'Infraction';
+      const accessTextMap = {
+        'inspection': 'Inspection',
+        'infraction': 'Infraction',
+        'signalisation': 'Signalisation'
+      };
+      const accessText = accessTextMap[accessType];
       const newText = newAccess ? `✓ ${accessText}` : `✗ ${accessText}`;
       const newClass = newAccess ? 'access-granted' : 'access-denied';
       
@@ -575,6 +599,7 @@ class AdminManager {
       document.getElementById('edit-user-status').value = userData.status || 'active';
       document.getElementById('edit-user-allow-inspection').checked = userData.allowInspection !== false;
       document.getElementById('edit-user-allow-infraction').checked = userData.allowInfraction === true;
+      document.getElementById('edit-user-allow-signalisation').checked = userData.allowSignalisation === true;
 
       // Disable self-modification of role/status
       const isCurrentUser = userId === this.currentUserId;
@@ -611,6 +636,7 @@ class AdminManager {
       status: document.getElementById('edit-user-status').value,
       allowInspection: document.getElementById('edit-user-allow-inspection').checked,
       allowInfraction: document.getElementById('edit-user-allow-infraction').checked,
+      allowSignalisation: document.getElementById('edit-user-allow-signalisation').checked,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedBy: this.currentUserId
     };

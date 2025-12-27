@@ -148,6 +148,22 @@
   --app-color-dark: #5b21b6;
 }
 
+/* Coming soon state */
+.app-card.coming-soon {
+  cursor: default;
+  opacity: 0.85;
+}
+
+.app-card.coming-soon:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+}
+
+.app-card.coming-soon .app-card-action {
+  color: var(--theme-text-light);
+  font-style: italic;
+}
+
 /* Access denied overlay */
 .app-card-locked {
   position: relative;

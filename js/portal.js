@@ -99,16 +99,17 @@ class PortalManager {
   getAccessPermissions() {
     const hasInspectionAccess = this.userData?.allowInspection !== false;
     const hasInfractionAccess = this.userData?.allowInfraction === true;
+    const hasSignalisationAccess = this.userData?.allowSignalisation === true;
     const isAdmin = this.userData?.role === 'admin';
     
     // Admin panel requires: admin role AND access to ALL apps
-    const hasFullAdminAccess = isAdmin && hasInspectionAccess && hasInfractionAccess;
+    const hasFullAdminAccess = isAdmin && hasInspectionAccess && hasInfractionAccess && hasSignalisationAccess;
     
     return {
       inspection: hasInspectionAccess,
       infraction: hasInfractionAccess,
-      admin: hasFullAdminAccess,
-      signalisation: false // Coming soon - always hidden for now
+      signalisation: hasSignalisationAccess,
+      admin: hasFullAdminAccess
     };
   }
 
@@ -132,7 +133,8 @@ class PortalManager {
         icon: '🔍',
         description: 'Système d\'inspection des sentiers et abris. Créez des rapports d\'inspection, consultez l\'historique et gérez le statut des pistes.',
         url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/index.html',
-        actionText: 'Accéder à l\'application'
+        actionText: 'Accéder à l\'application',
+        comingSoon: false
       },
       {
         id: 'infraction',
@@ -140,7 +142,17 @@ class PortalManager {
         icon: '🚨',
         description: 'Système de gestion des infractions. Enregistrez les infractions constatées et consultez l\'historique des rapports.',
         url: 'https://vvaraldi.github.io/Infraction_Orford/index.html',
-        actionText: 'Accéder à l\'application'
+        actionText: 'Accéder à l\'application',
+        comingSoon: false
+      },
+      {
+        id: 'signalisation',
+        title: 'Signalisation',
+        icon: '⚠️',
+        description: 'Système de gestion de la signalisation. Signalez les problèmes de signalisation et suivez leur résolution.',
+        url: null, // Not yet deployed
+        actionText: 'Bientôt disponible',
+        comingSoon: true
       },
       {
         id: 'admin',
@@ -148,9 +160,9 @@ class PortalManager {
         icon: '👥',
         description: 'Administration des utilisateurs. Créez de nouveaux comptes, gérez les accès et les permissions des patrouilleurs.',
         url: 'pages/admin.html',
-        actionText: 'Accéder à l\'administration'
+        actionText: 'Accéder à l\'administration',
+        comingSoon: false
       }
-      // Signalisation will be added here when ready
     ];
     
     // Generate cards only for accessible apps
@@ -179,9 +191,9 @@ class PortalManager {
    * Create a single app card element
    */
   createAppCard(app) {
-    const card = document.createElement('a');
-    card.href = '#';
-    card.className = 'app-card';
+    const card = document.createElement(app.comingSoon ? 'div' : 'a');
+    if (!app.comingSoon) card.href = '#';
+    card.className = 'app-card' + (app.comingSoon ? ' coming-soon' : '');
     card.dataset.app = app.id;
     
     card.innerHTML = `
@@ -193,16 +205,18 @@ class PortalManager {
         <p class="app-card-description">${app.description}</p>
         <div class="app-card-action">
           <span>${app.actionText}</span>
-          <span class="app-card-action-arrow">→</span>
+          <span class="app-card-action-arrow">${app.comingSoon ? '🔜' : '→'}</span>
         </div>
       </div>
     `;
     
-    // Add click handler
-    card.addEventListener('click', (e) => {
-      e.preventDefault();
-      this.navigateToApp(app.id, app.url);
-    });
+    // Add click handler only for active apps
+    if (!app.comingSoon && app.url) {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.navigateToApp(app.id, app.url);
+      });
+    }
     
     return card;
   }
