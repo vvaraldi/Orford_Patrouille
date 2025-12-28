@@ -129,16 +129,6 @@ class PortalManager {
     // Define available apps
     const apps = [
       {
-        id: 'status',
-        title: 'Statut randonnée',
-        icon: '🗺️',
-        description: 'Consultez l\'état actuel des sentiers - accessible au public sans connexion.',
-        url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/pages/status.html',
-        actionText: 'Voir le statut',
-        comingSoon: false,
-        openInNewTab: true
-      },
-      {
         id: 'inspection',
         title: 'Inspection piste de rando',
         icon: '🔍',
@@ -164,6 +154,16 @@ class PortalManager {
         url: null, // Not yet deployed
         actionText: 'Bientôt disponible',
         comingSoon: true
+      },
+      {
+        id: 'status',
+        title: 'Statut randonnée',
+        icon: '🗺️',
+        description: 'Consultez l\'état actuel des sentiers - accessible au public sans connexion.',
+        url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/pages/status.html',
+        actionText: 'Voir le statut',
+        comingSoon: false,
+        openInNewTab: true
       },
       {
         id: 'admin',
