@@ -3,7 +3,6 @@
 
 ## Prochaines étapes
 - Remove the login from Infraction_Orford as it was done with Inspection_Orford
-- Sortir la page public d'ouverture des pistes de inspections pour la mettre en lien sur la page de Orford Patrouille dans la barre de navigation en haut si pas loggé ou comme une application
 - Réduire considérablement la taille de l'encadrer en haut qui est dit : "Orford Patrouille" "Système de gestion pour les patrouilleurs du Mont Orford"
 - Ajouter "Signalisation" quand elle sera prête
 
