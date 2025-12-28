@@ -1,15 +1,18 @@
 # Orford Patrouille - Portail Central
 
 
-Prochaine étapes :
-- SOrtir la page public d'ouverture des pistes de inspections pour la mettre en lien sur la page de Orford Patrouille dans la barre de navigation en haut si pas loggé ou comme une application
-- Réduire onsidérablement la taille de l'encadrer en haut qui est dit : "Orford Patrouille" "Système de gestion pour les patrouilleurs du Mont Orford"
+## Prochaines étapes
+- Remove the login from Infraction_Orford as it was done with Inspection_Orford
+- Sortir la page public d'ouverture des pistes de inspections pour la mettre en lien sur la page de Orford Patrouille dans la barre de navigation en haut si pas loggé ou comme une application
+- Réduire considérablement la taille de l'encadrer en haut qui est dit : "Orford Patrouille" "Système de gestion pour les patrouilleurs du Mont Orford"
+- Ajouter "Signalisation" quand elle sera prête
 
 
 
-Portail d'accès centralisé pour les applications de patrouille du Mont Orford.
 
 ## Description
+
+Portail d'accès centralisé pour les applications de patrouille du Mont Orford.
 
 Ce portail sert de point d'entrée unique pour toutes les applications utilisées par les patrouilleurs du Mont Orford :
 
@@ -35,7 +38,6 @@ Ce portail sert de point d'entrée unique pour toutes les applications utilisée
 ### Accès aux applications
 - Affichage dynamique basé sur les permissions
 - Navigation directe vers les applications autorisées
-- Indication visuelle des applications non accessibles
 
 ## Structure du projet
 
@@ -86,7 +88,6 @@ Orford_Patrouille/
 ```
 
 ## Configuration Firebase
-
 Le portail utilise le même projet Firebase que les autres applications :
 - Projet: `trail-inspection`
 - Collection utilisateurs: `inspectors`
@@ -127,10 +128,6 @@ Le système de thèmes permet de changer rapidement l'apparence :
 
 Pour créer un nouveau thème, ajoutez les variables dans `css/config/variables.css`.
 
-## Déploiement
-
-## Prochaines étapes
-1. **Ajouter** Signalisation quand elle sera prête
 
 ## Notes techniques
 
