@@ -106,6 +106,7 @@ class PortalManager {
     const hasFullAdminAccess = isAdmin && hasInspectionAccess && hasInfractionAccess && hasSignalisationAccess;
     
     return {
+      status: true, // Always accessible - public page
       inspection: hasInspectionAccess,
       infraction: hasInfractionAccess,
       signalisation: hasSignalisationAccess,
@@ -127,6 +128,16 @@ class PortalManager {
     
     // Define available apps
     const apps = [
+      {
+        id: 'status',
+        title: 'Statut randonnée',
+        icon: '🗺️',
+        description: 'Consultez l\'état actuel des sentiers - accessible au public sans connexion.',
+        url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/pages/status.html',
+        actionText: 'Voir le statut',
+        comingSoon: false,
+        openInNewTab: true
+      },
       {
         id: 'inspection',
         title: 'Inspection piste de rando',
@@ -214,7 +225,7 @@ class PortalManager {
     if (!app.comingSoon && app.url) {
       card.addEventListener('click', (e) => {
         e.preventDefault();
-        this.navigateToApp(app.id, app.url);
+        this.navigateToApp(app.id, app.url, app.openInNewTab || false);
       });
     }
     
@@ -224,10 +235,13 @@ class PortalManager {
   /**
    * Navigate to an app
    */
-  navigateToApp(appType, url) {
+  navigateToApp(appType, url, openInNewTab = false) {
     if (url) {
-      // Navigate in the same window
-      window.location.href = url;
+      if (openInNewTab) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        window.location.href = url;
+      }
     }
   }
 }
