@@ -5,7 +5,7 @@
 /* Portal Hero Section */
 .portal-hero {
   text-align: center;
-  padding: var(--space-3xl) var(--space-md);
+  padding: var(--space-xl) var(--space-md);
   background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
   color: var(--color-white);
   margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-md)) var(--space-2xl);
@@ -34,18 +34,18 @@
 }
 
 .portal-logo {
-  font-size: 4rem;
-  margin-bottom: var(--space-md);
+  font-size: 2rem;
+  margin-bottom: var(--space-sm);
 }
 
 .portal-title {
-  font-size: var(--text-4xl);
+  font-size: var(--text-2xl);
   font-weight: var(--font-bold);
   margin-bottom: var(--space-sm);
 }
 
 .portal-subtitle {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   opacity: 0.9;
 }
 
