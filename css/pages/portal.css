@@ -40,12 +40,12 @@
 }
 
 .app-card-icon {
-  font-size: 3rem;
+  font-size: rem;
   margin-bottom: var(--space-sm);
 }
 
 .app-card-title {
-  font-size: var(--text-xl);
+  font-size: var(--text-l);
   font-weight: var(--font-bold);
   margin: 0;
 }
