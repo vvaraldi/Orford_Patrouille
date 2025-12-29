@@ -77,18 +77,6 @@
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .portal-hero {
-    padding: var(--space-lg) var(--space-sm);
-  }
-  
-  .portal-logo {
-    font-size: 1.5rem;
-  }
-  
-  .portal-title {
-    font-size: var(--text-xl);
-  }
 }
 
 /* Large devices (desktops) */

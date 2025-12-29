@@ -2,53 +2,6 @@
    PAGES/PORTAL.CSS - Portal Page Styles
    ======================================== */
 
-/* Portal Hero Section */
-.portal-hero {
-  text-align: center;
-  padding: var(--space-xl) var(--space-md);
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
-  color: var(--color-white);
-  margin: calc(-1 * var(--space-xl)) calc(-1 * var(--space-md)) var(--space-2xl);
-  position: relative;
-  overflow: hidden;
-}
-
-.portal-hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' opacity='0.1'%3E%3Cpath d='M100 0 L200 200 L0 200 Z' fill='%23ffffff'/%3E%3C/svg%3E");
-  background-size: 100px;
-  background-repeat: repeat;
-  opacity: 0.1;
-}
-
-.portal-hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.portal-logo {
-  font-size: 2rem;
-  margin-bottom: var(--space-sm);
-}
-
-.portal-title {
-  font-size: var(--text-2xl);
-  font-weight: var(--font-bold);
-  margin-bottom: var(--space-sm);
-}
-
-.portal-subtitle {
-  font-size: var(--text-base);
-  opacity: 0.9;
-}
-
 /* App Navigation Grid */
 .app-grid {
   display: grid;
