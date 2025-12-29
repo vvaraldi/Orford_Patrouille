@@ -2,7 +2,6 @@
 
 
 ## Prochaines étapes
-- Réduire considérablement la taille de l'encadrer en haut qui est dit : "Orford Patrouille" "Système de gestion pour les patrouilleurs du Mont Orford"
 - Ajouter "Signalisation" quand elle sera prête
 
 
