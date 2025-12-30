@@ -153,7 +153,7 @@ class PortalManager {
         description: 'Système de gestion de la signalisation.',
         url: 'https://vvaraldi.github.io/Signalisation_Orford/index.html', // Not yet deployed
         actionText: 'En travail !',
-        comingSoon: true
+        comingSoon: false
       },
       {
         id: 'status',
