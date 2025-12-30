@@ -2,8 +2,6 @@
 
 
 ## Prochaines étapes
-- Ajouter "Signalisation" quand elle sera prête
-- manage the extract in JSON here for all the apps at the same time.
 
 
 ## Description
