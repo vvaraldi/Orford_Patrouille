@@ -3,9 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orford Patrouille - Gestion des utilisateurs</title>
+  <title>Orford Patrouille - Administration</title>
   <link rel="stylesheet" href="../css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏔️</text></svg>">
+  <style>
+    /* Tab Navigation */
+    .tabs-container {
+      margin-bottom: 1.5rem;
+    }
+    .tabs {
+      display: flex;
+      background-color: var(--theme-surface, #fff);
+      border-radius: 8px;
+      padding: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      flex: 1;
+      min-width: 180px;
+      padding: 0.75rem 1.5rem;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: var(--theme-text-light, #6b7280);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .tab-btn:hover {
+      background-color: var(--color-gray-100, #f3f4f6);
+      color: var(--theme-text, #1f2937);
+    }
+    .tab-btn.active {
+      background-color: var(--theme-primary, #2563eb);
+      color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Export Section Styles */
+    .export-section {
+      padding: 1.5rem;
+      background-color: var(--color-gray-50, #f9fafb);
+      border-radius: 8px;
+      border: 1px solid var(--theme-border, #e5e7eb);
+      margin-bottom: 1.5rem;
+    }
+    .export-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .export-section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--theme-text, #1f2937);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .export-section-description {
+      color: var(--theme-text-light, #6b7280);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    .export-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .export-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: white;
+      border: 1px solid var(--theme-border, #e5e7eb);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .export-option:hover {
+      border-color: var(--theme-primary, #2563eb);
+      background-color: var(--color-blue-50, #eff6ff);
+    }
+    .export-option input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--theme-primary, #2563eb);
+    }
+    .export-option-label {
+      display: flex;
+      flex-direction: column;
+    }
+    .export-option-name {
+      font-weight: 500;
+      color: var(--theme-text, #1f2937);
+    }
+    .export-option-desc {
+      font-size: 0.75rem;
+      color: var(--theme-text-light, #6b7280);
+    }
+    .date-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .date-filter-row label {
+      font-weight: 500;
+      color: var(--theme-text, #1f2937);
+    }
+    .date-filter-row input[type="date"] {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--theme-border, #e5e7eb);
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    .export-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+    .export-status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      display: none;
+    }
+    .export-status.show {
+      display: block;
+    }
+    .export-status.info {
+      background-color: var(--color-blue-50, #eff6ff);
+      color: var(--color-blue-800, #1e40af);
+      border: 1px solid var(--color-blue-200, #bfdbfe);
+    }
+    .export-status.success {
+      background-color: var(--color-green-50, #f0fdf4);
+      color: var(--color-green-800, #166534);
+      border: 1px solid var(--color-green-200, #bbf7d0);
+    }
+    .export-status.error {
+      background-color: var(--color-red-50, #fef2f2);
+      color: var(--color-red-800, #991b1b);
+      border: 1px solid var(--color-red-200, #fecaca);
+    }
+    
+    @media (max-width: 768px) {
+      .tabs {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .tab-btn {
+        min-width: unset;
+        flex: unset;
+      }
+      .export-actions {
+        flex-direction: column;
+      }
+      .date-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -40,105 +218,231 @@
   <main id="main-content" class="main admin-main" style="display: none;">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Gestion des utilisateurs</h1>
+        <h1 class="page-title">Administration</h1>
         <p class="page-subtitle">Connecté: <span id="admin-name">Admin</span></p>
       </div>
     </div>
 
-    <div class="status-messages mb-lg">
-      <div id="user-success-message" class="alert alert-success" style="display: none;"></div>
-      <div id="user-error-message" class="alert alert-danger" style="display: none;"></div>
+    <!-- Tab Navigation -->
+    <div class="content-section">
+      <div class="tabs-container">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="users">
+            👥 Gestion des utilisateurs
+          </button>
+          <button class="tab-btn" data-tab="data">
+            📦 Gestion des données
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="content-section">
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">👥 Utilisateurs</h2>
-          <button class="btn btn-secondary btn-sm" id="refresh-users">🔄 Actualiser</button>
+    <!-- ========================================
+         TAB 1: USER MANAGEMENT (UNCHANGED)
+         ======================================== -->
+    <div class="tab-content active" id="users-tab">
+      <div class="status-messages mb-lg">
+        <div id="user-success-message" class="alert alert-success" style="display: none;"></div>
+        <div id="user-error-message" class="alert alert-danger" style="display: none;"></div>
+      </div>
+
+      <div class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">👥 Utilisateurs</h2>
+            <button class="btn btn-secondary btn-sm" id="refresh-users">🔄 Actualiser</button>
+          </div>
+          <div class="card-body">
+            <p class="text-muted text-sm mb-md">Cliquez sur un nom pour modifier.</p>
+            
+            <div class="table-responsive">
+              <table class="table" id="inspectors-table">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Rôle</th>
+                    <th>Status</th>
+                    <th>Accès</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="7" class="text-center">Chargement...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <p class="text-muted text-sm mb-md">Cliquez sur un nom pour modifier. Les badges permettent de basculer rapidement.</p>
-          <div class="table-container">
-            <table class="table table-striped" id="inspectors-table">
-              <thead>
-                <tr><th>Nom</th><th>Email</th><th>Tél.</th><th>Rôle</th><th>Statut</th><th>Accès</th><th>Actions</th></tr>
-              </thead>
-              <tbody>
-                <tr><td colspan="7" class="text-center">Chargement...</td></tr>
-              </tbody>
-            </table>
+      </div>
+
+      <!-- Create User Form -->
+      <div class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">➕ Créer un utilisateur</h2>
+          </div>
+          <div class="card-body">
+            <form id="user-form" class="admin-form">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label form-label-required" for="user-name">Nom complet</label>
+                  <input type="text" class="form-control" id="user-name" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label form-label-required" for="user-email">Email</label>
+                  <input type="email" class="form-control" id="user-email" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="user-phone">Téléphone</label>
+                  <input type="tel" class="form-control" id="user-phone">
+                </div>
+                <div class="form-group">
+                  <label class="form-label form-label-required" for="user-password">Mot de passe</label>
+                  <input type="password" class="form-control" id="user-password" required minlength="6">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="user-role">Rôle</label>
+                  <select class="form-control" id="user-role">
+                    <option value="inspector">Inspecteur</option>
+                    <option value="admin">Administrateur</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="user-status">Status</label>
+                  <select class="form-control" id="user-status">
+                    <option value="active">Actif</option>
+                    <option value="inactive">Inactif</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Accès aux applications</label>
+                <div class="access-checkboxes" style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="user-allow-inspection" checked>
+                    <span>🔍 Inspection</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="user-allow-infraction">
+                    <span>🚨 Infractions</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="user-allow-signalisation">
+                    <span>⚠️ Signalisation</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="form-actions" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary" id="submit-user-btn">
+                  Créer l'utilisateur
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="content-section">
-      <div class="card">
-        <div class="card-header"><h2 class="card-title">➕ Nouvel utilisateur</h2></div>
-        <div class="card-body">
-          <form class="admin-form" id="user-form">
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label form-label-required" for="user-name">Nom</label>
-                <input type="text" class="form-control" id="user-name" required>
+    <!-- ========================================
+         TAB 2: DATA MANAGEMENT (NEW)
+         ======================================== -->
+    <div class="tab-content" id="data-tab">
+      <div class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">📦 Gestion des données</h2>
+          </div>
+          <div class="card-body">
+            
+            <!-- Export Section -->
+            <div class="export-section">
+              <div class="export-section-header">
+                <h3 class="export-section-title">💾 Exporter les données</h3>
               </div>
-              <div class="form-group">
-                <label class="form-label form-label-required" for="user-email">Email</label>
-                <input type="email" class="form-control" id="user-email" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="user-phone">Téléphone</label>
-                <input type="tel" class="form-control" id="user-phone">
-              </div>
-              <div class="form-group">
-                <label class="form-label form-label-required" for="user-password">Mot de passe</label>
-                <input type="password" class="form-control" id="user-password" required minlength="6">
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="user-role">Rôle</label>
-                <select class="form-control" id="user-role">
-                  <option value="inspector">Inspecteur</option>
-                  <option value="admin">Administrateur</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="user-status">Statut</label>
-                <select class="form-control" id="user-status">
-                  <option value="active">Actif</option>
-                  <option value="inactive">Inactif</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group mt-md">
-              <label class="form-label">Accès</label>
-              <div class="access-checkboxes">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="user-allow-inspection" checked>
-                  <span class="checkbox-text"><span class="checkbox-icon">🔍</span> Inspection</span>
+              <p class="export-section-description">
+                Exportez les données du système en format JSON. Sélectionnez les types de données à inclure et la date de début.
+              </p>
+              
+              <!-- Data Types Selection -->
+              <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--theme-text);">
+                Types de données à exporter :
+              </h4>
+              <div class="export-options">
+                <label class="export-option">
+                  <input type="checkbox" id="export-trail-inspections" checked>
+                  <div class="export-option-label">
+                    <span class="export-option-name">🥾 Inspections de sentiers</span>
+                    <span class="export-option-desc">trail_inspections</span>
+                  </div>
                 </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" id="user-allow-infraction" checked>
-                  <span class="checkbox-text"><span class="checkbox-icon">🚨</span> Infractions</span>
+                <label class="export-option">
+                  <input type="checkbox" id="export-shelter-inspections" checked>
+                  <div class="export-option-label">
+                    <span class="export-option-name">🏠 Inspections d'abris</span>
+                    <span class="export-option-desc">shelter_inspections</span>
+                  </div>
                 </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" id="user-allow-signalisation" checked>
-                  <span class="checkbox-text"><span class="checkbox-icon">⚠️</span> Signalisation</span>
+                <label class="export-option">
+                  <input type="checkbox" id="export-infractions" checked>
+                  <div class="export-option-label">
+                    <span class="export-option-name">🚨 Infractions</span>
+                    <span class="export-option-desc">infractions</span>
+                  </div>
+                </label>
+                <label class="export-option">
+                  <input type="checkbox" id="export-signalisations" checked>
+                  <div class="export-option-label">
+                    <span class="export-option-name">⚠️ Signalisations</span>
+                    <span class="export-option-desc">signalisations</span>
+                  </div>
                 </label>
               </div>
+              
+              <!-- Date Filter -->
+              <div class="date-filter-row">
+                <label for="export-start-date">📅 Exporter à partir du :</label>
+                <input type="date" id="export-start-date" class="form-control" style="width: auto;">
+                <span style="color: var(--theme-text-light); font-size: 0.875rem;">
+                  (basé sur la date de création)
+                </span>
+              </div>
+              
+              <!-- Export Button -->
+              <div class="export-actions">
+                <button type="button" class="btn btn-primary" id="export-data-btn">
+                  📥 Exporter en JSON
+                </button>
+              </div>
+              
+              <!-- Status Message -->
+              <div id="export-status" class="export-status"></div>
             </div>
-            <div class="mt-lg">
-              <button type="submit" class="btn btn-primary" id="submit-user-btn">Créer l'utilisateur</button>
-            </div>
-          </form>
+            
+          </div>
         </div>
       </div>
     </div>
+
   </main>
 
+  <!-- Delete Confirmation Modal -->
   <div class="modal" id="delete-modal">
     <div class="modal-content">
-      <div class="modal-header"><h3 class="modal-title">⚠️ Confirmer la suppression</h3></div>
-      <div class="modal-body"><p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p></div>
+      <div class="modal-header">
+        <h3 class="modal-title">⚠️ Confirmer la suppression</h3>
+        <button class="modal-close" id="close-delete-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+        <p><strong id="delete-user-name"></strong></p>
+        <p class="text-danger">Cette action est irréversible.</p>
+      </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="cancel-delete">Annuler</button>
         <button class="btn btn-danger" id="confirm-delete">Supprimer</button>
@@ -146,56 +450,62 @@
     </div>
   </div>
 
-  <div class="modal edit-modal" id="edit-modal">
+  <!-- Edit User Modal -->
+  <div class="modal" id="edit-modal">
     <div class="modal-content">
-      <div class="modal-header"><h3 class="modal-title">✏️ Modifier l'utilisateur</h3></div>
+      <div class="modal-header">
+        <h3 class="modal-title">✏️ Modifier l'utilisateur</h3>
+        <button class="modal-close" id="close-edit-modal">&times;</button>
+      </div>
       <div class="modal-body">
-        <div class="edit-form-grid">
-          <div class="form-group">
-            <label class="form-label form-label-required" for="edit-user-name">Nom</label>
-            <input type="text" class="form-control" id="edit-user-name" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="edit-user-email">Email</label>
-            <input type="email" class="form-control" id="edit-user-email" disabled>
-            <div class="form-help">Non modifiable</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="edit-user-phone">Téléphone</label>
-            <input type="tel" class="form-control" id="edit-user-phone">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="edit-user-role">Rôle</label>
-            <select class="form-control" id="edit-user-role">
-              <option value="inspector">Inspecteur</option>
-              <option value="admin">Administrateur</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="edit-user-status">Statut</label>
-            <select class="form-control" id="edit-user-status">
-              <option value="active">Actif</option>
-              <option value="inactive">Inactif</option>
-            </select>
+        <form id="edit-user-form">
+          <input type="hidden" id="edit-user-id">
+          <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="edit-user-name">Nom complet</label>
+              <input type="text" class="form-control" id="edit-user-name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-user-email">Email</label>
+              <input type="email" class="form-control" id="edit-user-email" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-user-phone">Téléphone</label>
+              <input type="tel" class="form-control" id="edit-user-phone">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-user-role">Rôle</label>
+              <select class="form-control" id="edit-user-role">
+                <option value="inspector">Inspecteur</option>
+                <option value="admin">Administrateur</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-user-status">Status</label>
+              <select class="form-control" id="edit-user-status">
+                <option value="active">Actif</option>
+                <option value="inactive">Inactif</option>
+              </select>
+            </div>
           </div>
           <div class="form-group full-width">
             <label class="form-label">Accès</label>
-            <div class="access-checkboxes">
-              <label class="checkbox-label">
+            <div class="access-checkboxes" style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                 <input type="checkbox" id="edit-user-allow-inspection">
-                <span class="checkbox-text"><span class="checkbox-icon">🔍</span> Inspection</span>
+                <span>🔍 Inspection</span>
               </label>
-              <label class="checkbox-label">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                 <input type="checkbox" id="edit-user-allow-infraction">
-                <span class="checkbox-text"><span class="checkbox-icon">🚨</span> Infractions</span>
+                <span>🚨 Infractions</span>
               </label>
-              <label class="checkbox-label">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                 <input type="checkbox" id="edit-user-allow-signalisation">
-                <span class="checkbox-text"><span class="checkbox-icon">⚠️</span> Signalisation</span>
+                <span>⚠️ Signalisation</span>
               </label>
             </div>
           </div>
-        </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="cancel-edit">Annuler</button>
