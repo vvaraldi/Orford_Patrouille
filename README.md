@@ -2,9 +2,9 @@
 
 
 ## Prochaines étapes
+- assurer le bon fonctionnement du password reset
+- assurer le bon fonctionnement du changement de mot de passe
 - Ajouter "Signalisation" quand elle sera prête
-
-
 
 
 ## Description
