@@ -238,7 +238,7 @@
     </div>
 
     <!-- ========================================
-         TAB 1: USER MANAGEMENT (UNCHANGED)
+         TAB 1: USER MANAGEMENT (FROM OLD FILE - UNCHANGED)
          ======================================== -->
     <div class="tab-content active" id="users-tab">
       <div class="status-messages mb-lg">
@@ -253,25 +253,14 @@
             <button class="btn btn-secondary btn-sm" id="refresh-users">🔄 Actualiser</button>
           </div>
           <div class="card-body">
-            <p class="text-muted text-sm mb-md">Cliquez sur un nom pour modifier.</p>
-            
-            <div class="table-responsive">
-              <table class="table" id="inspectors-table">
+            <p class="text-muted text-sm mb-md">Cliquez sur un nom pour modifier. Les badges permettent de basculer rapidement.</p>
+            <div class="table-container">
+              <table class="table table-striped" id="inspectors-table">
                 <thead>
-                  <tr>
-                    <th>Nom</th>
-                    <th>Email</th>
-                    <th>Téléphone</th>
-                    <th>Rôle</th>
-                    <th>Status</th>
-                    <th>Accès</th>
-                    <th>Actions</th>
-                  </tr>
+                  <tr><th>Nom</th><th>Email</th><th>Tél.</th><th>Rôle</th><th>Statut</th><th>Accès</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td colspan="7" class="text-center">Chargement...</td>
-                  </tr>
+                  <tr><td colspan="7" class="text-center">Chargement...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -279,17 +268,14 @@
         </div>
       </div>
 
-      <!-- Create User Form -->
       <div class="content-section">
         <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">➕ Créer un utilisateur</h2>
-          </div>
+          <div class="card-header"><h2 class="card-title">➕ Nouvel utilisateur</h2></div>
           <div class="card-body">
-            <form id="user-form" class="admin-form">
+            <form class="admin-form" id="user-form">
               <div class="form-grid">
                 <div class="form-group">
-                  <label class="form-label form-label-required" for="user-name">Nom complet</label>
+                  <label class="form-label form-label-required" for="user-name">Nom</label>
                   <input type="text" class="form-control" id="user-name" required>
                 </div>
                 <div class="form-group">
@@ -312,36 +298,32 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="user-status">Status</label>
+                  <label class="form-label" for="user-status">Statut</label>
                   <select class="form-control" id="user-status">
                     <option value="active">Actif</option>
                     <option value="inactive">Inactif</option>
                   </select>
                 </div>
               </div>
-              
-              <div class="form-group">
-                <label class="form-label">Accès aux applications</label>
-                <div class="access-checkboxes" style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <div class="form-group mt-md">
+                <label class="form-label">Accès</label>
+                <div class="access-checkboxes">
+                  <label class="checkbox-label">
                     <input type="checkbox" id="user-allow-inspection" checked>
-                    <span>🔍 Inspection</span>
+                    <span class="checkbox-text"><span class="checkbox-icon">🔍</span> Inspection</span>
                   </label>
-                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                    <input type="checkbox" id="user-allow-infraction">
-                    <span>🚨 Infractions</span>
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="user-allow-infraction" checked>
+                    <span class="checkbox-text"><span class="checkbox-icon">🚨</span> Infractions</span>
                   </label>
-                  <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                    <input type="checkbox" id="user-allow-signalisation">
-                    <span>⚠️ Signalisation</span>
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="user-allow-signalisation" checked>
+                    <span class="checkbox-text"><span class="checkbox-icon">⚠️</span> Signalisation</span>
                   </label>
                 </div>
               </div>
-              
-              <div class="form-actions" style="margin-top: 1.5rem;">
-                <button type="submit" class="btn btn-primary" id="submit-user-btn">
-                  Créer l'utilisateur
-                </button>
+              <div class="mt-lg">
+                <button type="submit" class="btn btn-primary" id="submit-user-btn">Créer l'utilisateur</button>
               </div>
             </form>
           </div>
@@ -431,18 +413,11 @@
 
   </main>
 
-  <!-- Delete Confirmation Modal -->
+  <!-- Delete Modal (FROM OLD FILE - UNCHANGED) -->
   <div class="modal" id="delete-modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">⚠️ Confirmer la suppression</h3>
-        <button class="modal-close" id="close-delete-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
-        <p><strong id="delete-user-name"></strong></p>
-        <p class="text-danger">Cette action est irréversible.</p>
-      </div>
+      <div class="modal-header"><h3 class="modal-title">⚠️ Confirmer la suppression</h3></div>
+      <div class="modal-body"><p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p></div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="cancel-delete">Annuler</button>
         <button class="btn btn-danger" id="confirm-delete">Supprimer</button>
@@ -450,62 +425,57 @@
     </div>
   </div>
 
-  <!-- Edit User Modal -->
-  <div class="modal" id="edit-modal">
+  <!-- Edit Modal (FROM OLD FILE - UNCHANGED) -->
+  <div class="modal edit-modal" id="edit-modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">✏️ Modifier l'utilisateur</h3>
-        <button class="modal-close" id="close-edit-modal">&times;</button>
-      </div>
+      <div class="modal-header"><h3 class="modal-title">✏️ Modifier l'utilisateur</h3></div>
       <div class="modal-body">
-        <form id="edit-user-form">
-          <input type="hidden" id="edit-user-id">
-          <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-              <label class="form-label" for="edit-user-name">Nom complet</label>
-              <input type="text" class="form-control" id="edit-user-name" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="edit-user-email">Email</label>
-              <input type="email" class="form-control" id="edit-user-email" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="edit-user-phone">Téléphone</label>
-              <input type="tel" class="form-control" id="edit-user-phone">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="edit-user-role">Rôle</label>
-              <select class="form-control" id="edit-user-role">
-                <option value="inspector">Inspecteur</option>
-                <option value="admin">Administrateur</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="edit-user-status">Status</label>
-              <select class="form-control" id="edit-user-status">
-                <option value="active">Actif</option>
-                <option value="inactive">Inactif</option>
-              </select>
-            </div>
+        <div class="edit-form-grid">
+          <div class="form-group">
+            <label class="form-label form-label-required" for="edit-user-name">Nom</label>
+            <input type="text" class="form-control" id="edit-user-name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-user-email">Email</label>
+            <input type="email" class="form-control" id="edit-user-email" disabled>
+            <div class="form-help">Non modifiable</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-user-phone">Téléphone</label>
+            <input type="tel" class="form-control" id="edit-user-phone">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-user-role">Rôle</label>
+            <select class="form-control" id="edit-user-role">
+              <option value="inspector">Inspecteur</option>
+              <option value="admin">Administrateur</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-user-status">Statut</label>
+            <select class="form-control" id="edit-user-status">
+              <option value="active">Actif</option>
+              <option value="inactive">Inactif</option>
+            </select>
           </div>
           <div class="form-group full-width">
             <label class="form-label">Accès</label>
-            <div class="access-checkboxes" style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <div class="access-checkboxes">
+              <label class="checkbox-label">
                 <input type="checkbox" id="edit-user-allow-inspection">
-                <span>🔍 Inspection</span>
+                <span class="checkbox-text"><span class="checkbox-icon">🔍</span> Inspection</span>
               </label>
-              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <label class="checkbox-label">
                 <input type="checkbox" id="edit-user-allow-infraction">
-                <span>🚨 Infractions</span>
+                <span class="checkbox-text"><span class="checkbox-icon">🚨</span> Infractions</span>
               </label>
-              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <label class="checkbox-label">
                 <input type="checkbox" id="edit-user-allow-signalisation">
-                <span>⚠️ Signalisation</span>
+                <span class="checkbox-text"><span class="checkbox-icon">⚠️</span> Signalisation</span>
               </label>
             </div>
           </div>
-        </form>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="cancel-edit">Annuler</button>

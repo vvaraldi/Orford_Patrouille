@@ -132,7 +132,7 @@ class PortalManager {
         id: 'inspection',
         title: 'Inspection piste de rando',
         icon: '🔍',
-        description: 'Système d\'inspection des sentiers et abris. Créez des rapports d\'inspection, consultez l\'historique et gérez le statut des pistes.',
+        description: 'Gestion d\'inspection des sentiers et abris de randonnée alpine. Créez des rapports d\'inspection, consultez l\'historique et gérez le statut des pistes.',
         url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/index.html',
         actionText: 'Accéder à l\'application',
         comingSoon: false
@@ -141,7 +141,7 @@ class PortalManager {
         id: 'infraction',
         title: 'Infraction',
         icon: '🚨',
-        description: 'Système de gestion des infractions. Enregistrez les infractions constatées et consultez l\'historique des rapports.',
+        description: 'Gestion des infractions. Enregistrement et gestions des infractions constatées.',
         url: 'https://vvaraldi.github.io/Infraction_Orford/index.html',
         actionText: 'Accéder à l\'application',
         comingSoon: false
@@ -150,16 +150,16 @@ class PortalManager {
         id: 'signalisation',
         title: 'Signalisation',
         icon: '🚧',
-        description: 'Système de gestion de la signalisation.',
-        url: 'https://vvaraldi.github.io/Signalisation_Orford/index.html', // Not yet deployed
-        actionText: 'En travail !',
+        description: 'Gestion de la signalisation des pistes.',
+        url: 'https://vvaraldi.github.io/Signalisation_Orford/index.html',
+        actionText: 'Programme en validation !',
         comingSoon: false
       },
       {
         id: 'status',
         title: 'Statut randonnée',
         icon: '🗺️',
-        description: 'Consultez l\'état actuel des sentiers - accessible au public sans connexion.',
+        description: 'Consultez l\'état actuel des sentiers - accessible à tous.',
         url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/pages/status.html',
         actionText: 'Voir le statut',
         comingSoon: false,
@@ -169,7 +169,7 @@ class PortalManager {
         id: 'admin',
         title: 'Gestion des utilisateurs et des données',
         icon: '👥',
-        description: 'Administration des utilisateurs (nouveaux comptes, gestion d\'accès et de permissions) et bientôt exportation des données.',
+        description: 'Administration des utilisateurs et exportation des données.',
         url: 'pages/admin.html',
         actionText: 'Accéder à l\'administration',
         comingSoon: false

@@ -1,10 +1,13 @@
 /**
- * admin.js - Admin Panel for User Management + Data Export
+ * admin.js - Admin Panel for User Management
  * Centralized user management for Orford Patrouille
  * 
  * Features:
- * - Tab 1: User Management (view, create, edit, toggle, delete users) - UNCHANGED from original
- * - Tab 2: Data Management (export data to JSON) - NEW
+ * - View all users
+ * - Create new users
+ * - Edit user details (click on row)
+ * - Toggle role, status, access permissions
+ * - Delete users
  */
 
 class AdminManager {
@@ -70,7 +73,6 @@ class AdminManager {
               this.initializeElements();
               this.bindEvents();
               this.loadInspectors();
-              this.initializeExportDefaults();
               
               // Update admin name display
               const adminName = document.getElementById('admin-name');
@@ -111,30 +113,15 @@ class AdminManager {
   }
 
   initializeElements() {
-    // Tab elements
-    this.tabBtns = document.querySelectorAll('.tab-btn');
-    this.tabContents = document.querySelectorAll('.tab-content');
-    
-    // User management elements
     this.userForm = document.getElementById('user-form');
     this.inspectorsTable = document.getElementById('inspectors-table');
     this.deleteModal = document.getElementById('delete-modal');
     this.editModal = document.getElementById('edit-modal');
     this.userSuccessMessage = document.getElementById('user-success-message');
     this.userErrorMessage = document.getElementById('user-error-message');
-    
-    // Export elements
-    this.exportBtn = document.getElementById('export-data-btn');
-    this.exportStartDate = document.getElementById('export-start-date');
-    this.exportStatus = document.getElementById('export-status');
   }
 
   bindEvents() {
-    // Tab navigation
-    this.tabBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
-    });
-    
     // User form submission
     if (this.userForm) {
       this.userForm.addEventListener('submit', (e) => this.handleUserFormSubmit(e));
@@ -182,322 +169,10 @@ class AdminManager {
         if (e.target === this.editModal) this.closeEditModal();
       });
     }
-    
-    // Export button
-    if (this.exportBtn) {
-      this.exportBtn.addEventListener('click', () => this.executeExport());
-    }
   }
 
   // ========================================
-  // TAB NAVIGATION (NEW)
-  // ========================================
-  
-  switchTab(tabName) {
-    // Update tab buttons
-    this.tabBtns.forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.tab === tabName) {
-        btn.classList.add('active');
-      }
-    });
-
-    // Update tab content
-    this.tabContents.forEach(content => {
-      content.classList.remove('active');
-      if (content.id === `${tabName}-tab`) {
-        content.classList.add('active');
-      }
-    });
-  }
-
-  // ========================================
-  // EXPORT FUNCTIONALITY (NEW)
-  // ========================================
-  
-  initializeExportDefaults() {
-    // Calculate default date: September 1st of the current season
-    const today = new Date();
-    let defaultYear = today.getFullYear();
-    
-    // If we're before September (months 0-8 in JS), use previous year
-    if (today.getMonth() < 8) {
-      defaultYear = defaultYear - 1;
-    }
-    
-    const defaultDate = new Date(defaultYear, 8, 1); // September 1st
-    const formattedDate = defaultDate.toISOString().split('T')[0];
-    
-    if (this.exportStartDate) {
-      this.exportStartDate.value = formattedDate;
-    }
-  }
-  
-  showExportStatus(message, type = 'info') {
-    if (this.exportStatus) {
-      this.exportStatus.textContent = message;
-      this.exportStatus.className = `export-status show ${type}`;
-    }
-  }
-  
-  hideExportStatus() {
-    if (this.exportStatus) {
-      this.exportStatus.className = 'export-status';
-    }
-  }
-  
-  // Helper method to format dates as "hh:mm of DD-MM-YYYY"
-  formatExportDate(value) {
-    if (!value) return null;
-    
-    let date;
-    
-    // Handle Firestore Timestamp
-    if (value && typeof value.toDate === 'function') {
-      date = value.toDate();
-    }
-    // Handle existing Date object
-    else if (value instanceof Date) {
-      date = value;
-    }
-    // Handle string or number
-    else if (typeof value === 'string' || typeof value === 'number') {
-      date = new Date(value);
-    }
-    // Handle Firestore Timestamp-like object with seconds
-    else if (value && value.seconds) {
-      date = new Date(value.seconds * 1000);
-    }
-    else {
-      return value; // Return as-is if we can't parse it
-    }
-    
-    // Check for valid date
-    if (isNaN(date.getTime())) {
-      return value;
-    }
-    
-    // Format as "hh:mm of DD-MM-YYYY"
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    
-    return `${hours}:${minutes} of ${day}-${month}-${year}`;
-  }
-
-  // Helper method to process document data and format dates
-  formatDocumentDates(data) {
-    const formatted = { ...data };
-    
-    // List of known date fields to format
-    const dateFields = [
-      'date', 'createdAt', 'updatedAt', 'created_at', 'updated_at', 
-      'lastLogin', 'last_login', 'modifiedAt', 'archivedAt', 
-      'resolvedAt', 'adminModifiedAt', 'offenceTimestamp',
-      'timestampModificationAdmin', 'timestampArchivedAdmin'
-    ];
-    
-    for (const key of Object.keys(formatted)) {
-      const value = formatted[key];
-      
-      // Check if this is a known date field or looks like a Firestore Timestamp
-      if (dateFields.includes(key) || (value && (typeof value.toDate === 'function' || value.seconds))) {
-        formatted[key] = this.formatExportDate(value);
-      }
-    }
-    
-    return formatted;
-  }
-
-  async executeExport() {
-    // Get selected data types
-    const exportTrailInspections = document.getElementById('export-trail-inspections')?.checked ?? true;
-    const exportShelterInspections = document.getElementById('export-shelter-inspections')?.checked ?? true;
-    const exportInfractions = document.getElementById('export-infractions')?.checked ?? true;
-    const exportSignalisations = document.getElementById('export-signalisations')?.checked ?? true;
-    
-    // Check if at least one type is selected
-    if (!exportTrailInspections && !exportShelterInspections && !exportInfractions && !exportSignalisations) {
-      alert('Veuillez sélectionner au moins un type de données à exporter.');
-      return;
-    }
-    
-    // Get start date
-    if (!this.exportStartDate || !this.exportStartDate.value) {
-      alert('Veuillez sélectionner une date de début');
-      return;
-    }
-
-    const startDate = new Date(this.exportStartDate.value);
-    startDate.setHours(0, 0, 0, 0);
-    const startTimestamp = firebase.firestore.Timestamp.fromDate(startDate);
-
-    try {
-      // Update UI
-      this.exportBtn.disabled = true;
-      this.exportBtn.textContent = '⏳ Export en cours...';
-      this.showExportStatus('Chargement des données de référence...', 'info');
-      
-      // Load reference data for name resolution
-      const [trails, shelters, inspectors] = await Promise.all([
-        this.db.collection('trails').get(),
-        this.db.collection('shelters').get(),
-        this.db.collection('inspectors').get()
-      ]);
-
-      // Create lookup maps for ID -> name resolution
-      const trailsMap = new Map();
-      trails.docs.forEach(doc => {
-        const data = doc.data();
-        trailsMap.set(doc.id, data.name || doc.id);
-      });
-
-      const sheltersMap = new Map();
-      shelters.docs.forEach(doc => {
-        const data = doc.data();
-        sheltersMap.set(doc.id, data.name || doc.id);
-      });
-
-      const inspectorsMap = new Map();
-      inspectors.docs.forEach(doc => {
-        const data = doc.data();
-        inspectorsMap.set(doc.id, data.name || doc.id);
-      });
-
-      // Prepare export data object
-      const exportData = {
-        exportDate: this.formatExportDate(new Date()),
-        exportPeriod: {
-          from: this.formatExportDate(startDate),
-          to: this.formatExportDate(new Date())
-        },
-        summary: {}
-      };
-
-      // Load Trail Inspections
-      if (exportTrailInspections) {
-        this.showExportStatus('Chargement des inspections de sentiers...', 'info');
-        const trailInspectionsSnapshot = await this.db.collection('trail_inspections')
-          .where('date', '>=', startTimestamp)
-          .orderBy('date', 'desc')
-          .get();
-        
-        exportData.trailInspections = trailInspectionsSnapshot.docs.map(doc => {
-          const data = this.formatDocumentDates(doc.data());
-          if (data.trail_id) {
-            data.trail_name = trailsMap.get(data.trail_id) || data.trail_id;
-            delete data.trail_id;
-          }
-          if (data.inspector_id && !data.inspector_name) {
-            data.inspector_name = inspectorsMap.get(data.inspector_id) || data.inspector_id;
-          }
-          delete data.inspector_id;
-          return { id: doc.id, ...data };
-        });
-        exportData.summary.trailInspectionsCount = trailInspectionsSnapshot.size;
-      }
-
-      // Load Shelter Inspections
-      if (exportShelterInspections) {
-        this.showExportStatus('Chargement des inspections d\'abris...', 'info');
-        const shelterInspectionsSnapshot = await this.db.collection('shelter_inspections')
-          .where('date', '>=', startTimestamp)
-          .orderBy('date', 'desc')
-          .get();
-        
-        exportData.shelterInspections = shelterInspectionsSnapshot.docs.map(doc => {
-          const data = this.formatDocumentDates(doc.data());
-          if (data.shelter_id) {
-            data.shelter_name = sheltersMap.get(data.shelter_id) || data.shelter_id;
-            delete data.shelter_id;
-          }
-          if (data.inspector_id && !data.inspector_name) {
-            data.inspector_name = inspectorsMap.get(data.inspector_id) || data.inspector_id;
-          }
-          delete data.inspector_id;
-          return { id: doc.id, ...data };
-        });
-        exportData.summary.shelterInspectionsCount = shelterInspectionsSnapshot.size;
-      }
-
-      // Load Infractions
-      if (exportInfractions) {
-        this.showExportStatus('Chargement des infractions...', 'info');
-        const infractionsSnapshot = await this.db.collection('infractions')
-          .where('createdAt', '>=', startTimestamp)
-          .orderBy('createdAt', 'desc')
-          .get();
-        
-        exportData.infractions = infractionsSnapshot.docs.map(doc => {
-          const data = this.formatDocumentDates(doc.data());
-          // Resolve patrol ID to name if needed
-          if (data.patrolId && !data.patrolName) {
-            data.patrolName = inspectorsMap.get(data.patrolId) || data.patrolId;
-          }
-          return { id: doc.id, ...data };
-        });
-        exportData.summary.infractionsCount = infractionsSnapshot.size;
-      }
-
-      // Load Signalisations
-      if (exportSignalisations) {
-        this.showExportStatus('Chargement des signalisations...', 'info');
-        const signalisationsSnapshot = await this.db.collection('signalisations')
-          .where('createdAt', '>=', startTimestamp)
-          .orderBy('createdAt', 'desc')
-          .get();
-        
-        exportData.signalisations = signalisationsSnapshot.docs.map(doc => {
-          const data = this.formatDocumentDates(doc.data());
-          // Resolve inspector ID to name if needed
-          if (data.inspectorId && !data.inspectorName) {
-            data.inspectorName = inspectorsMap.get(data.inspectorId) || data.inspectorId;
-          }
-          return { id: doc.id, ...data };
-        });
-        exportData.summary.signalisationsCount = signalisationsSnapshot.size;
-      }
-
-      // Create filename with date range
-      const fromDateStr = startDate.toISOString().split('T')[0];
-      const toDateStr = new Date().toISOString().split('T')[0];
-      const filename = `OrfordPatrouille-Export-${fromDateStr}-to-${toDateStr}.json`;
-      
-      // Create and download file
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      // Calculate total records
-      const totalRecords = (exportData.summary.trailInspectionsCount || 0) +
-                          (exportData.summary.shelterInspectionsCount || 0) +
-                          (exportData.summary.infractionsCount || 0) +
-                          (exportData.summary.signalisationsCount || 0);
-      
-      this.showExportStatus(`✓ Export réussi! ${totalRecords} enregistrements exportés.`, 'success');
-      console.log('✓ Données exportées avec succès:', exportData.summary);
-      
-    } catch (error) {
-      console.error('✗ Erreur lors de l\'export:', error);
-      this.showExportStatus(`✗ Erreur: ${error.message}`, 'error');
-      alert('Erreur lors de l\'export: ' + error.message);
-    } finally {
-      this.exportBtn.disabled = false;
-      this.exportBtn.textContent = '📥 Exporter en JSON';
-    }
-  }
-
-  // ========================================
-  // USER CREATION (FROM OLD FILE - UNCHANGED)
+  // USER CREATION
   // ========================================
 
   async handleUserFormSubmit(e) {
@@ -631,7 +306,7 @@ class AdminManager {
   }
 
   // ========================================
-  // LOAD & DISPLAY USERS (FROM OLD FILE - UNCHANGED)
+  // LOAD & DISPLAY USERS
   // ========================================
 
   async loadInspectors() {
@@ -812,7 +487,7 @@ class AdminManager {
   }
 
   // ========================================
-  // TOGGLE FUNCTIONS (FROM OLD FILE - UNCHANGED)
+  // TOGGLE FUNCTIONS
   // ========================================
 
   async toggleUserRole(userId, newRole, buttonElement) {
@@ -901,7 +576,7 @@ class AdminManager {
   }
 
   // ========================================
-  // EDIT MODAL (FROM OLD FILE - UNCHANGED)
+  // EDIT MODAL
   // ========================================
 
   async openEditModal(userId) {
@@ -997,7 +672,7 @@ class AdminManager {
   }
 
   // ========================================
-  // DELETE MODAL (FROM OLD FILE - UNCHANGED)
+  // DELETE MODAL
   // ========================================
 
   openDeleteModal(userId) {
@@ -1049,7 +724,7 @@ class AdminManager {
   }
 
   // ========================================
-  // MESSAGES (FROM OLD FILE - UNCHANGED)
+  // MESSAGES
   // ========================================
 
   showSuccess(message) {
@@ -1085,26 +760,6 @@ class AdminManager {
       this.userErrorMessage.style.display = 'none';
     }
   }
-}
-
-// Helper function to redirect to portal
-function redirectToPortal() {
-  window.location.href = '../index.html';
-}
-
-// Helper function to redirect to login
-function redirectToLogin() {
-  window.location.href = 'https://vvaraldi.github.io/Orford_Patrouille/pages/login.html';
-}
-
-// Handle logout
-function handleLogout(event) {
-  event.preventDefault();
-  firebase.auth().signOut().then(() => {
-    window.location.href = 'https://vvaraldi.github.io/Orford_Patrouille/pages/login.html';
-  }).catch(error => {
-    console.error('Error signing out:', error);
-  });
 }
 
 // Initialize when DOM is ready
