@@ -149,10 +149,10 @@ class PortalManager {
       {
         id: 'signalisation',
         title: 'Signalisation',
-        icon: '⚠️',
+        icon: '🚧',
         description: 'Système de gestion de la signalisation.',
-        url: null, // Not yet deployed
-        actionText: 'Bientôt disponible',
+        url: 'https://vvaraldi.github.io/Signalisation_Orford/index.html', // Not yet deployed
+        actionText: 'En travail !',
         comingSoon: true
       },
       {

@@ -2,9 +2,8 @@
 
 
 ## Prochaines étapes
-- assurer le bon fonctionnement du password reset
-- assurer le bon fonctionnement du changement de mot de passe
 - Ajouter "Signalisation" quand elle sera prête
+- manage the extract in JSON here for all the apps at the same time.
 
 
 ## Description
