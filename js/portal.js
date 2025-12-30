@@ -167,9 +167,9 @@ class PortalManager {
       },
       {
         id: 'admin',
-        title: 'Gestion des utilisateurs',
+        title: 'Gestion des utilisateurs et des données',
         icon: '👥',
-        description: 'Administration des utilisateurs. Créez de nouveaux comptes, gérez les accès et les permissions des patrouilleurs.',
+        description: 'Administration des utilisateurs (nouveaux comptes, gestion d\'accès et de permissions) et bientôt exportation des données.',
         url: 'pages/admin.html',
         actionText: 'Accéder à l\'administration',
         comingSoon: false
