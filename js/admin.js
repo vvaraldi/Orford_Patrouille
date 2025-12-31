@@ -463,7 +463,7 @@ class AdminManager {
       // Create filename with date range
       const fromDateStr = startDate.toISOString().split('T')[0];
       const toDateStr = new Date().toISOString().split('T')[0];
-      const filename = `OrfordPatrouille-Export-${fromDateStr}-to-${toDateStr}.json`;
+      const filename = `Orford_Patrouille-Export-${fromDateStr}-to-${toDateStr}.json`;
       
       // Create and download file
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
