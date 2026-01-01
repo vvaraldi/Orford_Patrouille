@@ -3,8 +3,9 @@
  * Centralized user management for Orford Patrouille
  * 
  * Features:
- * - Tab 1: User Management (view, create, edit, toggle, delete users) - UNCHANGED from original
- * - Tab 2: Data Management (export data to JSON) - NEW
+ * - Tab 1: User Management (view, create, edit, toggle, delete users)
+ * - Tab 2: Data Management (export data to JSON)
+ * - Bulk Import: Import multiple users from CSV file
  */
 
 class AdminManager {
@@ -14,6 +15,10 @@ class AdminManager {
     this.db = null;
     this.userToDelete = null;
     this.userToEdit = null;
+    
+    // Bulk import state
+    this.parsedUsers = [];
+    this.importCancelled = false;
     
     this.init();
   }
@@ -127,6 +132,11 @@ class AdminManager {
     this.exportBtn = document.getElementById('export-data-btn');
     this.exportStartDate = document.getElementById('export-start-date');
     this.exportStatus = document.getElementById('export-status');
+    
+    // Bulk import elements
+    this.csvFileInput = document.getElementById('csv-file');
+    this.startImportBtn = document.getElementById('start-import-btn');
+    this.cancelImportBtn = document.getElementById('cancel-import-btn');
   }
 
   bindEvents() {
@@ -187,10 +197,21 @@ class AdminManager {
     if (this.exportBtn) {
       this.exportBtn.addEventListener('click', () => this.executeExport());
     }
+    
+    // Bulk import events
+    if (this.csvFileInput) {
+      this.csvFileInput.addEventListener('change', (e) => this.handleCsvFileSelect(e));
+    }
+    if (this.startImportBtn) {
+      this.startImportBtn.addEventListener('click', () => this.startBulkImport());
+    }
+    if (this.cancelImportBtn) {
+      this.cancelImportBtn.addEventListener('click', () => this.cancelBulkImport());
+    }
   }
 
   // ========================================
-  // TAB NAVIGATION (NEW)
+  // TAB NAVIGATION
   // ========================================
   
   switchTab(tabName) {
@@ -212,7 +233,7 @@ class AdminManager {
   }
 
   // ========================================
-  // EXPORT FUNCTIONALITY (NEW)
+  // EXPORT FUNCTIONALITY
   // ========================================
   
   initializeExportDefaults() {
@@ -497,7 +518,354 @@ class AdminManager {
   }
 
   // ========================================
-  // USER CREATION (FROM OLD FILE - UNCHANGED)
+  // BULK IMPORT - CSV PARSING
+  // ========================================
+
+  handleCsvFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const csvText = e.target.result;
+      this.parseCsvAndPreview(csvText);
+    };
+    reader.readAsText(file);
+  }
+
+  parseCsvAndPreview(csvText) {
+    // Reset state
+    this.parsedUsers = [];
+    this.hideImportResults();
+    
+    // Parse CSV
+    const lines = csvText.split('\n').filter(line => line.trim());
+    
+    if (lines.length < 2) {
+      this.showError('Le fichier CSV doit contenir au moins une ligne d\'en-tête et une ligne de données');
+      return;
+    }
+
+    // Parse header (first line)
+    const headers = this.parseCsvLine(lines[0]).map(h => h.toLowerCase().trim());
+    
+    // Map header names to our expected fields (supports multiple variations)
+    const headerMap = {
+      'name': ['name', 'nom'],
+      'email': ['email', 'courriel', 'e-mail'],
+      'password': ['password', 'mot de passe', 'motdepasse'],
+      'phone': ['phone', 'phone (optional)', 'telephone', 'téléphone', 'tel'],
+      'role': ['role', 'role (admin/inspector)', 'rôle'],
+      'status': ['status', 'status (active/inactive)', 'statut'],
+      'allowInspection': ['allowinspection', 'allowinspection (true/false)', 'inspection'],
+      'allowInfraction': ['allowinfraction', 'allowinfraction (true/false)', 'infraction'],
+      'allowSignalisation': ['allowsignalisation', 'allowsignalisation (true/false)', 'signalisation']
+    };
+
+    // Find column indices
+    const columnIndices = {};
+    for (const [field, possibleNames] of Object.entries(headerMap)) {
+      columnIndices[field] = headers.findIndex(h => possibleNames.includes(h));
+    }
+
+    // Validate required columns exist
+    if (columnIndices.name === -1 || columnIndices.email === -1 || columnIndices.password === -1) {
+      this.showError('Le fichier CSV doit contenir les colonnes: name, email, password');
+      return;
+    }
+
+    // Parse data rows
+    for (let i = 1; i < lines.length; i++) {
+      const values = this.parseCsvLine(lines[i]);
+      if (values.length === 0 || !values[columnIndices.email]?.trim()) continue;
+
+      const user = {
+        name: values[columnIndices.name]?.trim() || '',
+        email: values[columnIndices.email]?.trim().toLowerCase() || '',
+        password: values[columnIndices.password]?.trim() || '',
+        phone: columnIndices.phone !== -1 ? values[columnIndices.phone]?.trim() || '' : '',
+        role: this.parseRole(columnIndices.role !== -1 ? values[columnIndices.role] : ''),
+        status: this.parseStatus(columnIndices.status !== -1 ? values[columnIndices.status] : ''),
+        allowInspection: this.parseBoolean(columnIndices.allowInspection !== -1 ? values[columnIndices.allowInspection] : 'true'),
+        allowInfraction: this.parseBoolean(columnIndices.allowInfraction !== -1 ? values[columnIndices.allowInfraction] : 'true'),
+        allowSignalisation: this.parseBoolean(columnIndices.allowSignalisation !== -1 ? values[columnIndices.allowSignalisation] : 'false')
+      };
+
+      // Validate user data
+      if (user.name && user.email && user.password.length >= 6) {
+        this.parsedUsers.push(user);
+      } else if (user.email) {
+        // Log skipped users due to validation
+        console.warn(`Skipping user ${user.email}: invalid data (name: ${!!user.name}, password length: ${user.password.length})`);
+      }
+    }
+
+    // Show preview
+    this.showCsvPreview();
+  }
+
+  parseCsvLine(line) {
+    const values = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    values.push(current);
+    
+    return values.map(v => v.replace(/^"|"$/g, '').trim());
+  }
+
+  parseRole(value) {
+    const v = (value || '').toLowerCase().trim();
+    return v === 'admin' || v === 'administrateur' ? 'admin' : 'inspector';
+  }
+
+  parseStatus(value) {
+    const v = (value || '').toLowerCase().trim();
+    return v === 'inactive' || v === 'inactif' ? 'inactive' : 'active';
+  }
+
+  parseBoolean(value) {
+    const v = (value || '').toLowerCase().trim();
+    return v === 'true' || v === 'vrai' || v === 'oui' || v === 'yes' || v === '1';
+  }
+
+  showCsvPreview() {
+    const previewDiv = document.getElementById('csv-preview');
+    const tbody = document.getElementById('csv-preview-table')?.querySelector('tbody');
+    const countSpan = document.getElementById('csv-user-count');
+
+    if (!previewDiv || !tbody) return;
+
+    tbody.innerHTML = '';
+
+    this.parsedUsers.forEach(user => {
+      const accessBadges = [];
+      if (user.allowInspection) accessBadges.push('🔍');
+      if (user.allowInfraction) accessBadges.push('🚨');
+      if (user.allowSignalisation) accessBadges.push('⚠️');
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${this.escapeHtml(user.name)}</td>
+        <td>${this.escapeHtml(user.email)}</td>
+        <td><span class="badge ${user.role === 'admin' ? 'badge-warning' : 'badge-info'}">${user.role}</span></td>
+        <td><span class="badge ${user.status === 'active' ? 'badge-success' : 'badge-secondary'}">${user.status}</span></td>
+        <td>${accessBadges.join(' ') || '-'}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    if (countSpan) countSpan.textContent = this.parsedUsers.length;
+    
+    previewDiv.style.display = 'block';
+    
+    if (this.startImportBtn) {
+      this.startImportBtn.disabled = this.parsedUsers.length === 0;
+    }
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ========================================
+  // BULK IMPORT - EXECUTION
+  // ========================================
+
+  async startBulkImport() {
+    if (this.parsedUsers.length === 0) return;
+
+    this.importCancelled = false;
+    
+    const progressDiv = document.getElementById('import-progress');
+    const progressBar = document.getElementById('import-progress-bar');
+    const progressText = document.getElementById('import-progress-text');
+
+    // Update UI
+    if (this.startImportBtn) this.startImportBtn.disabled = true;
+    if (this.cancelImportBtn) this.cancelImportBtn.style.display = 'inline-block';
+    if (progressDiv) progressDiv.style.display = 'block';
+    
+    this.hideImportResults();
+
+    // Get existing emails to skip duplicates
+    let existingEmails = new Set();
+    try {
+      const snapshot = await this.db.collection('inspectors').get();
+      snapshot.forEach(doc => {
+        const email = doc.data().email?.toLowerCase();
+        if (email) existingEmails.add(email);
+      });
+    } catch (error) {
+      console.error('Error fetching existing users:', error);
+    }
+
+    // Import results tracking
+    const results = {
+      success: [],
+      skipped: [],
+      errors: []
+    };
+
+    // Process users one by one
+    for (let i = 0; i < this.parsedUsers.length; i++) {
+      if (this.importCancelled) {
+        results.errors.push({ email: 'Import annulé', reason: 'Annulé par l\'utilisateur' });
+        break;
+      }
+
+      const user = this.parsedUsers[i];
+      const progress = Math.round(((i + 1) / this.parsedUsers.length) * 100);
+      
+      if (progressBar) progressBar.style.width = progress + '%';
+      if (progressText) progressText.textContent = `Importation: ${i + 1}/${this.parsedUsers.length} - ${user.email}`;
+
+      // Check if email already exists
+      if (existingEmails.has(user.email.toLowerCase())) {
+        results.skipped.push({ email: user.email, reason: 'Email déjà existant' });
+        continue;
+      }
+
+      // Create user
+      let secondaryApp = null;
+      try {
+        // Create secondary Firebase app to avoid auto-login
+        const appName = 'bulkImport_' + Date.now() + '_' + i;
+        secondaryApp = firebase.initializeApp(getFirebaseConfig(), appName);
+        const secondaryAuth = secondaryApp.auth();
+
+        // Create Firebase Auth user
+        const userCredential = await secondaryAuth.createUserWithEmailAndPassword(
+          user.email,
+          user.password
+        );
+
+        // Add to Firestore
+        await this.db.collection('inspectors').doc(userCredential.user.uid).set({
+          name: user.name,
+          email: user.email,
+          phone: user.phone || null,
+          role: user.role,
+          status: user.status,
+          allowInspection: user.allowInspection,
+          allowInfraction: user.allowInfraction,
+          allowSignalisation: user.allowSignalisation,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdBy: this.currentUserId,
+          importedVia: 'bulk'
+        });
+
+        results.success.push({ email: user.email, name: user.name });
+        existingEmails.add(user.email.toLowerCase()); // Prevent duplicates within same import
+
+      } catch (error) {
+        console.error('Error creating user:', user.email, error);
+        results.errors.push({ 
+          email: user.email, 
+          reason: this.getBulkImportErrorMessage(error)
+        });
+      } finally {
+        // Clean up secondary app
+        if (secondaryApp) {
+          try {
+            await secondaryApp.delete();
+          } catch (e) {
+            console.warn('Error cleaning up secondary app:', e);
+          }
+        }
+      }
+
+      // Small delay to prevent rate limiting
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    // Show results
+    this.showImportResults(results);
+
+    // Reset UI
+    if (this.startImportBtn) this.startImportBtn.disabled = false;
+    if (this.cancelImportBtn) this.cancelImportBtn.style.display = 'none';
+    if (progressDiv) progressDiv.style.display = 'none';
+
+    // Refresh user list
+    this.loadInspectors();
+  }
+
+  getBulkImportErrorMessage(error) {
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        return 'Email déjà utilisé';
+      case 'auth/invalid-email':
+        return 'Email invalide';
+      case 'auth/weak-password':
+        return 'Mot de passe trop faible (min 6 caractères)';
+      case 'auth/operation-not-allowed':
+        return 'Création de compte désactivée';
+      default:
+        return error.message || 'Erreur inconnue';
+    }
+  }
+
+  cancelBulkImport() {
+    this.importCancelled = true;
+  }
+
+  showImportResults(results) {
+    const resultsDiv = document.getElementById('import-results');
+    const successCount = document.getElementById('import-success-count');
+    const skippedCount = document.getElementById('import-skipped-count');
+    const errorCount = document.getElementById('import-error-count');
+    const detailsDiv = document.getElementById('import-details');
+
+    if (!resultsDiv) return;
+
+    if (successCount) successCount.textContent = results.success.length;
+    if (skippedCount) skippedCount.textContent = results.skipped.length;
+    if (errorCount) errorCount.textContent = results.errors.length;
+
+    // Build details
+    let detailsHtml = '';
+    
+    if (results.skipped.length > 0) {
+      detailsHtml += '<strong>Ignorés (email existant):</strong><br>';
+      results.skipped.forEach(item => {
+        detailsHtml += `<div class="detail-item">⏭️ ${item.email}</div>`;
+      });
+    }
+    
+    if (results.errors.length > 0) {
+      detailsHtml += '<strong>Erreurs:</strong><br>';
+      results.errors.forEach(item => {
+        detailsHtml += `<div class="detail-item">✗ ${item.email}: ${item.reason}</div>`;
+      });
+    }
+
+    if (detailsDiv) detailsDiv.innerHTML = detailsHtml;
+    
+    resultsDiv.style.display = 'block';
+  }
+
+  hideImportResults() {
+    const resultsDiv = document.getElementById('import-results');
+    if (resultsDiv) resultsDiv.style.display = 'none';
+  }
+
+  // ========================================
+  // USER CREATION (SINGLE USER)
   // ========================================
 
   async handleUserFormSubmit(e) {
@@ -631,7 +999,7 @@ class AdminManager {
   }
 
   // ========================================
-  // LOAD & DISPLAY USERS (FROM OLD FILE - UNCHANGED)
+  // LOAD & DISPLAY USERS
   // ========================================
 
   async loadInspectors() {
@@ -812,7 +1180,7 @@ class AdminManager {
   }
 
   // ========================================
-  // TOGGLE FUNCTIONS (FROM OLD FILE - UNCHANGED)
+  // TOGGLE FUNCTIONS
   // ========================================
 
   async toggleUserRole(userId, newRole, buttonElement) {
@@ -901,7 +1269,7 @@ class AdminManager {
   }
 
   // ========================================
-  // EDIT MODAL (FROM OLD FILE - UNCHANGED)
+  // EDIT MODAL
   // ========================================
 
   async openEditModal(userId) {
@@ -997,7 +1365,7 @@ class AdminManager {
   }
 
   // ========================================
-  // DELETE MODAL (FROM OLD FILE - UNCHANGED)
+  // DELETE MODAL
   // ========================================
 
   openDeleteModal(userId) {
@@ -1049,7 +1417,7 @@ class AdminManager {
   }
 
   // ========================================
-  // MESSAGES (FROM OLD FILE - UNCHANGED)
+  // MESSAGES
   // ========================================
 
   showSuccess(message) {

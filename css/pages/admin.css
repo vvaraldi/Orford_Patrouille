@@ -116,3 +116,100 @@
   font-size: var(--text-sm);
   color: var(--theme-text-light);
 }
+
+
+
+/* Bulk Import Styles */
+.csv-format-info {
+  background-color: var(--color-gray-50);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--theme-border);
+}
+
+.csv-example {
+  display: block;
+  background-color: var(--color-gray-100);
+  padding: var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--text-xs);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.csv-preview {
+  background-color: var(--color-gray-50);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--theme-border);
+  margin-bottom: var(--space-md);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.csv-preview .table-sm td,
+.csv-preview .table-sm th {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-sm);
+}
+
+.import-progress {
+  margin: var(--space-md) 0;
+}
+
+.progress-bar-container {
+  height: 20px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--color-success);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  text-align: center;
+  margin-top: var(--space-sm);
+  font-size: var(--text-sm);
+  color: var(--theme-text-light);
+}
+
+.import-results {
+  background-color: var(--color-gray-50);
+  padding: var(--space-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--theme-border);
+}
+
+.import-results-summary {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.result-success { color: var(--color-success); font-weight: var(--font-semibold); }
+.result-skipped { color: var(--color-warning); font-weight: var(--font-semibold); }
+.result-error { color: var(--color-danger); font-weight: var(--font-semibold); }
+
+.import-details {
+  font-size: var(--text-sm);
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.import-details .detail-item {
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.import-details .detail-item:last-child {
+  border-bottom: none;
+}
+
+.bulk-import-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
