@@ -111,7 +111,7 @@ class PortalManager {
       infraction: hasInfractionAccess,
       signalisation: hasSignalisationAccess,
       admin: hasFullAdminAccess,
-	  Request: true
+      request: true // Requests accessible to all authenticated users
     };
   }
 
@@ -176,7 +176,7 @@ class PortalManager {
         comingSoon: false
       },
       {
-        id: 'Request',
+        id: 'request',
         title: 'Demandes & Suggestions',
         icon: '📋',
         description: 'Signaler un bug ou proposer une amélioration',
