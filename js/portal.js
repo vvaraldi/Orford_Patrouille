@@ -110,7 +110,7 @@ class PortalManager {
       inspection: hasInspectionAccess,
       infraction: hasInfractionAccess,
       signalisation: hasSignalisationAccess,
-      admin: hasFullAdminAccess
+      admin: hasFullAdminAccess,
 	  Request: true
     };
   }
