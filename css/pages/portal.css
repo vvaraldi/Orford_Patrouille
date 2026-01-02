@@ -102,8 +102,8 @@
 }
 
 <.app-card[data-app="admin"] {
-  --app-color: #7c3aed;
-  --app-color-dark: #5b21b6;
+  --app-color: #a16207;
+  --app-color-dark: #854d0e;
 }
 
 .app-card[data-app="request"] {
