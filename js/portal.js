@@ -111,6 +111,7 @@ class PortalManager {
       infraction: hasInfractionAccess,
       signalisation: hasSignalisationAccess,
       admin: hasFullAdminAccess
+	  Request: true
     };
   }
 
@@ -172,6 +173,15 @@ class PortalManager {
         description: 'Administration des utilisateurs et exportation des données.',
         url: 'pages/admin.html',
         actionText: 'Accéder à l\'administration',
+        comingSoon: false
+      }
+      {
+        id: 'Request',
+        title: 'Demandes & Suggestions',
+        icon: '📋',
+        description: 'Signaler un bug ou proposer une amélioration',
+        url: 'pages/requests.html',
+        actionText: 'Accéder au registre',
         comingSoon: false
       }
     ];

@@ -764,6 +764,7 @@ class AdminManager {
           allowInspection: user.allowInspection,
           allowInfraction: user.allowInfraction,
           allowSignalisation: user.allowSignalisation,
+		  isSystemAdmin: false,  // Always false by default, can only be changed directly in database
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           createdBy: this.currentUserId,
           importedVia: 'bulk'
@@ -912,6 +913,7 @@ class AdminManager {
         allowInspection: userData.allowInspection,
         allowInfraction: userData.allowInfraction,
         allowSignalisation: userData.allowSignalisation,
+		isSystemAdmin: false,  // Always false by default, can only be changed directly in database
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         createdBy: this.currentUserId
       });

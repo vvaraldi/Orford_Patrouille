@@ -2,6 +2,7 @@
 
 
 ## Prochaines étapes
+Une gestion des commentaires et demandes d'amélioration
 
 
 ## Description

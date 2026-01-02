@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demandes & Suggestions - Orford Patrouille</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../assets/logo.png">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/pages/requests.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="../index.html" class="logo">
+        <img src="../assets/logo.png" alt="Logo" class="logo-img">
+        <span class="logo-text">Orford Patrouille</span>
+      </a>
+      
+      <div class="nav-links">
+        <a href="../index.html">Tableau de bord</a>
+        <a href="requests.html" class="active">Demandes</a>
+        <a href="#" id="login-link">Connexion</a>
+        <a href="https://vvaraldi.github.io/Orford_Patrouille/index.html" id="main-menu-link" style="display: none;">🏠 Menu principal</a>
+      </div>
+      
+      <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+    </nav>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+      <div class="mobile-nav-header">
+        <div class="logo">Orford Patrouille</div>
+        <button class="mobile-nav-close" id="mobile-nav-close">✕</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="../index.html">Tableau de bord</a>
+        <a href="requests.html" class="active">Demandes</a>
+        <a href="#" id="mobile-login-link">Connexion</a>
+        <a href="https://vvaraldi.github.io/Orford_Patrouille/index.html" id="mobile-main-menu-link" style="display: none;">🏠 Menu principal</a>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Loading screen -->
+  <div id="loading" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  </div>
+  
+  <!-- Main content -->
+  <main id="main-content" class="main" style="display: none;">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">📋 Demandes & Suggestions</h1>
+          <p class="page-subtitle">Signaler un bug ou proposer une amélioration</p>
+        </div>
+        <div class="page-header-right">
+          <button class="btn btn-primary" id="new-request-btn">
+            + Nouvelle demande
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="content-section">
+        <div class="card">
+          <div class="card-body">
+            <div class="filters-row">
+              <div class="filter-group">
+                <label for="filter-type">Type</label>
+                <select id="filter-type" class="form-control">
+                  <option value="all">Tous les types</option>
+                  <option value="bug">🐛 Bug</option>
+                  <option value="feature">✨ Fonctionnalité</option>
+                  <option value="question">❓ Question</option>
+                  <option value="suggestion">💡 Suggestion</option>
+                </select>
+              </div>
+              
+              <div class="filter-group">
+                <label for="filter-status">Statut</label>
+                <select id="filter-status" class="form-control">
+                  <option value="all">Tous les statuts</option>
+                  <option value="new">🆕 Nouveau</option>
+                  <option value="in_progress">🔄 En cours</option>
+                  <option value="resolved">✅ Résolu</option>
+                  <option value="archived">📦 Archivé</option>
+                </select>
+              </div>
+              
+              <div class="filter-group">
+                <label for="filter-priority">Priorité</label>
+                <select id="filter-priority" class="form-control">
+                  <option value="all">Toutes les priorités</option>
+                  <option value="high">🔴 Haute</option>
+                  <option value="medium">🟡 Moyenne</option>
+                  <option value="low">🟢 Basse</option>
+                </select>
+              </div>
+
+              <!-- Admin only: filter by user -->
+              <div class="filter-group" id="filter-user-group" style="display: none;">
+                <label for="filter-user">Utilisateur</label>
+                <select id="filter-user" class="form-control">
+                  <option value="all">Tous les utilisateurs</option>
+                </select>
+              </div>
+              
+              <div class="filter-group filter-actions">
+                <button class="btn btn-secondary btn-sm" id="reset-filters-btn">
+                  Réinitialiser
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Requests List -->
+      <div class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Liste des demandes</h2>
+            <span class="request-count" id="request-count">0 demande(s)</span>
+          </div>
+          <div class="card-body">
+            <div id="requests-list" class="requests-list">
+              <!-- Requests will be loaded here -->
+              <div class="empty-state">
+                <p>Aucune demande pour le moment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- New Request Modal -->
+  <div class="modal" id="new-request-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Nouvelle demande</h2>
+        <button class="modal-close" id="new-request-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="new-request-form">
+          <div class="form-group">
+            <label for="request-title">Titre *</label>
+            <input type="text" id="request-title" class="form-control" required 
+                   placeholder="Résumé court de votre demande">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="request-type">Type *</label>
+              <select id="request-type" class="form-control" required>
+                <option value="">Sélectionner...</option>
+                <option value="bug">🐛 Bug</option>
+                <option value="feature">✨ Fonctionnalité</option>
+                <option value="question">❓ Question</option>
+                <option value="suggestion">💡 Suggestion</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="request-priority">Priorité *</label>
+              <select id="request-priority" class="form-control" required>
+                <option value="">Sélectionner...</option>
+                <option value="low">🟢 Basse</option>
+                <option value="medium" selected>🟡 Moyenne</option>
+                <option value="high">🔴 Haute</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="request-description">Description *</label>
+            <textarea id="request-description" class="form-control" rows="5" required
+                      placeholder="Décrivez votre demande en détail..."></textarea>
+          </div>
+          
+          <div id="new-request-error" class="alert alert-danger" style="display: none;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancel-new-request">Annuler</button>
+        <button type="submit" form="new-request-form" class="btn btn-primary" id="submit-new-request">
+          Soumettre
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Detail Modal -->
+  <div class="modal" id="request-detail-modal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 class="modal-title" id="detail-modal-title">Détail de la demande</h2>
+        <button class="modal-close" id="detail-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Request Info -->
+        <div class="request-detail-info">
+          <div class="request-detail-header">
+            <span class="request-type-badge" id="detail-type"></span>
+            <span class="request-priority-badge" id="detail-priority"></span>
+            <span class="request-status-badge" id="detail-status"></span>
+          </div>
+          
+          <div class="request-detail-meta">
+            <span id="detail-author"></span>
+            <span id="detail-date"></span>
+          </div>
+          
+          <div class="request-detail-description" id="detail-description">
+          </div>
+
+          <!-- Admin Controls -->
+          <div class="admin-controls" id="admin-controls" style="display: none;">
+            <h4>Actions administrateur</h4>
+            <div class="admin-controls-row">
+              <div class="form-group">
+                <label for="admin-priority">Priorité</label>
+                <select id="admin-priority" class="form-control">
+                  <option value="low">🟢 Basse</option>
+                  <option value="medium">🟡 Moyenne</option>
+                  <option value="high">🔴 Haute</option>
+                </select>
+              </div>
+              
+              <!-- System Admin only -->
+              <div class="form-group" id="status-control-group" style="display: none;">
+                <label for="admin-status">Statut</label>
+                <select id="admin-status" class="form-control">
+                  <option value="new">🆕 Nouveau</option>
+                  <option value="in_progress">🔄 En cours</option>
+                  <option value="resolved">✅ Résolu</option>
+                  <option value="archived">📦 Archivé</option>
+                </select>
+              </div>
+              
+              <div class="form-group admin-controls-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="save-admin-changes">
+                  Enregistrer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Comments Section -->
+        <div class="comments-section">
+          <h3 class="comments-title">
+            Commentaires
+            <span class="comments-count" id="comments-count">(0)</span>
+          </h3>
+          
+          <div class="comments-list" id="comments-list">
+            <!-- Comments will be loaded here -->
+          </div>
+          
+          <!-- Add Comment Form -->
+          <div class="add-comment-form">
+            <div class="form-group">
+              <label for="new-comment">Ajouter un commentaire</label>
+              <textarea id="new-comment" class="form-control" rows="3" 
+                        placeholder="Votre commentaire..."></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" id="submit-comment">
+              Envoyer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2025 Orford Patrouille - Mont Orford</p>
+  </footer>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  
+  <!-- Application Scripts -->
+  <script src="../js/auth.js"></script>
+  <script src="../js/mobile-menu.js"></script>
+  <script src="../js/requests.js"></script>
+</body>
+</html>
