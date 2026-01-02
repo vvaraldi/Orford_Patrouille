@@ -22,10 +22,13 @@
 	  </div>
       
       <div class="nav-links">
-        <a href="../index.html">← Retour au portail</a>
+        <a href="../index.html" style="display: none;">← Retour au portail</a>
         <a href="requests.html" class="active">Demandes</a>
         <a href="#" id="login-link" onclick="handleLogout(event)">Déconnexion</a>
-        <a href="https://vvaraldi.github.io/Orford_Patrouille/index.html" id="main-menu-link" style="display: none;">🏠 Menu principal</a>
+		<span class="nav-divider" id="main-menu-divider" ></span>
+		<a href="https://vvaraldi.github.io/Orford_Patrouille/index.html" id="main-menu-link" class="main-menu-link" title="Accéder au Menu principal">
+			<span class="main-menu-icon">🏠</span> Menu principal
+		</a>
       </div>
       
       <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
@@ -38,10 +41,10 @@
         <button class="mobile-nav-close" id="mobile-nav-close">✕</button>
       </div>
       <div class="mobile-nav-links">
-        <a href="../index.html">← Retour au portail</a>
+        <a href="../index.html" style="display: none;">← Retour au portail</a>
         <a href="requests.html" class="active">Demandes</a>
         <a href="#" id="mobile-login-link" onclick="handleLogout(event)">Déconnexion</a>
-        <a href="https://vvaraldi.github.io/Orford_Patrouille/index.html" id="mobile-main-menu-link" style="display: none;">🏠 Menu principal</a>
+        <a href="https://vvaraldi.github.io/Orford_Patrouille/index.html" id="mobile-main-menu-link">🏠 Menu principal</a>
       </div>
     </div>
   </header>
