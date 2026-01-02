@@ -174,7 +174,7 @@ class PortalManager {
         url: 'pages/admin.html',
         actionText: 'Accéder à l\'administration',
         comingSoon: false
-      }
+      },
       {
         id: 'Request',
         title: 'Demandes & Suggestions',
