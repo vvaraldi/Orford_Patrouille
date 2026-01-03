@@ -2,7 +2,7 @@
 
 
 ## Prochaines étapes
-Une gestion des commentaires et demandes d'amélioration
+Notifications par courriel pour les requêtes ?
 
 
 ## Description
