@@ -131,7 +131,7 @@ class PortalManager {
     const apps = [
       {
         id: 'inspection',
-        title: 'Inspection piste de rando',
+        title: 'Inspection sentiers de rando',
         icon: '🔍',
         description: 'Gestion d\'inspection des sentiers et abris de randonnée alpine. Créez des rapports d\'inspection, consultez l\'historique et gérez le statut des pistes.',
         url: 'https://vvaraldi.github.io/Inspection_Rando_Orford/index.html',
