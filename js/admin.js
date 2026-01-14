@@ -507,14 +507,6 @@ class AdminManager {
 		  URL.revokeObjectURL(url);
 		}
       
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
       // Calculate total records
       const totalRecords = (exportData.summary.trailInspectionsCount || 0) +
                           (exportData.summary.shelterInspectionsCount || 0) +
