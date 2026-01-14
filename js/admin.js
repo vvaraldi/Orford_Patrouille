@@ -531,31 +531,47 @@ class AdminManager {
   // ========================================
 
   downloadAsCSV(exportData, filename) {
-	  const allRecords = [
-		...(exportData.trailInspections || []).map(r => ({type: 'trail_inspection', ...r})),
-		...(exportData.shelterInspections || []).map(r => ({type: 'shelter_inspection', ...r})),
-		...(exportData.infractions || []).map(r => ({type: 'infraction', ...r})),
-		...(exportData.signalisations || []).map(r => ({type: 'signalisation', ...r}))
-	  ];
-	  
-	  if (allRecords.length === 0) return;
-	  
-	  const headers = [...new Set(allRecords.flatMap(Object.keys))];
-	  const csv = '\uFEFF' + [
-		headers.join(','),
-		...allRecords.map(row => headers.map(h => {
-		  const v = row[h] ?? '';
-		  const s = typeof v === 'object' ? JSON.stringify(v) : String(v);
-		  return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g, '""')}"` : s;
-		}).join(','))
-	  ].join('\n');
-	  
-	  const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-	  const a = document.createElement('a');
-	  a.href = URL.createObjectURL(blob);
-	  a.download = filename;
-	  a.click();
-}
+  const dataTypes = [
+    { key: 'trailInspections', label: 'Inspections-Sentiers' },
+    { key: 'shelterInspections', label: 'Inspections-Abris' },
+    { key: 'infractions', label: 'Infractions' },
+    { key: 'signalisations', label: 'Signalisations' }
+  ];
+  
+  const baseFilename = filename.replace('.csv', '');
+  let filesDownloaded = 0;
+  
+  dataTypes.forEach((type, index) => {
+    const records = exportData[type.key];
+    if (!records || records.length === 0) return;
+    
+    const headers = [...new Set(records.flatMap(Object.keys))];
+    const csv = '\uFEFF' + [
+      headers.join(','),
+      ...records.map(row => headers.map(h => {
+        const v = row[h] ?? '';
+        let s = typeof v === 'object' ? JSON.stringify(v) : String(v);
+        s = s.replace(/[\r\n]+/g, ' ');
+        return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g, '""')}"` : s;
+      }).join(','))
+    ].join('\n');
+    
+    // Stagger downloads to avoid browser blocking
+    setTimeout(() => {
+      const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${baseFilename}_${type.label}.csv`;
+      a.click();
+    }, index * 500);
+    
+    filesDownloaded++;
+  });
+  
+  if (filesDownloaded === 0) {
+    this.showExportStatus('Aucune donnée à exporter.', 'info');
+  }
+  }
 
   handleCsvFileSelect(event) {
     const file = event.target.files[0];
