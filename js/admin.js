@@ -130,6 +130,7 @@ class AdminManager {
     
     // Export elements
     this.exportBtn = document.getElementById('export-data-btn');
+    this.exportCsvBtn = document.getElementById('export-csv-btn');
     this.exportStartDate = document.getElementById('export-start-date');
     this.exportStatus = document.getElementById('export-status');
     
@@ -198,6 +199,11 @@ class AdminManager {
       this.exportBtn.addEventListener('click', () => this.executeExport());
     }
     
+    // Export button CSV
+	if (this.exportCsvBtn) {
+	  this.exportCsvBtn.addEventListener('click', () => this.executeExport('csv'));
+	}
+
     // Bulk import events
     if (this.csvFileInput) {
       this.csvFileInput.addEventListener('change', (e) => this.handleCsvFileSelect(e));
@@ -332,7 +338,7 @@ class AdminManager {
     return formatted;
   }
 
-  async executeExport() {
+  async executeExport(format = 'json') {
     // Get selected data types
     const exportTrailInspections = document.getElementById('export-trail-inspections')?.checked ?? true;
     const exportShelterInspections = document.getElementById('export-shelter-inspections')?.checked ?? true;
@@ -487,8 +493,19 @@ class AdminManager {
       const filename = `Orford_Patrouille-Export-${fromDateStr}-to-${toDateStr}.json`;
       
       // Create and download file
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
+		if (format === 'csv') {
+		  this.downloadAsCSV(exportData, filename.replace('.json', '.csv'));
+		} else {
+		  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+		  const url = URL.createObjectURL(blob);
+		  const a = document.createElement('a');
+		  a.href = url;
+		  a.download = filename;
+		  document.body.appendChild(a);
+		  a.click();
+		  document.body.removeChild(a);
+		  URL.revokeObjectURL(url);
+		}
       
       const a = document.createElement('a');
       a.href = url;
@@ -520,6 +537,33 @@ class AdminManager {
   // ========================================
   // BULK IMPORT - CSV PARSING
   // ========================================
+
+  downloadAsCSV(exportData, filename) {
+	  const allRecords = [
+		...(exportData.trailInspections || []).map(r => ({type: 'trail_inspection', ...r})),
+		...(exportData.shelterInspections || []).map(r => ({type: 'shelter_inspection', ...r})),
+		...(exportData.infractions || []).map(r => ({type: 'infraction', ...r})),
+		...(exportData.signalisations || []).map(r => ({type: 'signalisation', ...r}))
+	  ];
+	  
+	  if (allRecords.length === 0) return;
+	  
+	  const headers = [...new Set(allRecords.flatMap(Object.keys))];
+	  const csv = '\uFEFF' + [
+		headers.join(','),
+		...allRecords.map(row => headers.map(h => {
+		  const v = row[h] ?? '';
+		  const s = typeof v === 'object' ? JSON.stringify(v) : String(v);
+		  return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g, '""')}"` : s;
+		}).join(','))
+	  ].join('\n');
+	  
+	  const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+	  const a = document.createElement('a');
+	  a.href = URL.createObjectURL(blob);
+	  a.download = filename;
+	  a.click();
+}
 
   handleCsvFileSelect(event) {
     const file = event.target.files[0];
