@@ -78,7 +78,7 @@ class PortalManager {
     }
     
     if (welcomeRole) {
-      const roleText = this.userData.role === 'admin' ? 'Administrateur' : 'Inspecteur';
+      const roleText = (this.userData.role === 'admin' || this.userData.role === 'system_admin') ? 'Administrateur' : 'Inspecteur';
       welcomeRole.textContent = roleText;
     }
     
@@ -100,7 +100,7 @@ class PortalManager {
     const hasInspectionAccess = this.userData?.allowInspection !== false;
     const hasInfractionAccess = this.userData?.allowInfraction === true;
     const hasSignalisationAccess = this.userData?.allowSignalisation === true;
-    const isAdmin = this.userData?.role === 'admin';
+    const isAdmin = this.userData?.role === 'admin' || this.userData?.role === 'system_admin';
     
     // Admin panel requires: admin role AND access to ALL apps
     const hasFullAdminAccess = isAdmin && hasInspectionAccess && hasInfractionAccess && hasSignalisationAccess;

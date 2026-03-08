@@ -67,8 +67,8 @@ function checkAuthStatus(options = {}) {
           }
 
           // Check admin requirement
-          if (requireAdmin && currentUserData.role !== 'admin') {
-            showAccessDenied('Accès réservé aux administrateurs.');
+		  if (requireAdmin && currentUserData.role !== 'admin' && currentUserData.role !== 'system_admin') {
+			showAccessDenied('Accès réservé aux administrateurs.');
             return;
           }
 
@@ -328,7 +328,7 @@ function getCurrentUserId() {
  * @returns {boolean} True if admin
  */
 function isAdmin() {
-  return currentUserData && currentUserData.role === 'admin';
+  return currentUserData && (currentUserData.role === 'admin' || currentUserData.role === 'system_admin');
 }
 
 /**

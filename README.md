@@ -4,6 +4,13 @@
 ## Prochaines étapes
 Notifications par courriel pour les requêtes ?
 
+Prochaines améliorations possibles dixit Opus4.1:   Pas sûr de vouloir faire et intérêt
+0- all in one application to avoid duplicated functions
+1- Convertir en modules ES6 pour une meilleure organisation
+3- PWA (Progressive Web App) : Transformez l'application en PWA pour une expérience proche d'une application native
+4- Ajouter des tests unitaires pour les fonctions critiques
+
+
 
 ## Description
 

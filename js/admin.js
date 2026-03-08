@@ -53,7 +53,7 @@ class AdminManager {
               }
               
               // Check if admin role
-              if (userData.role !== 'admin') {
+              if (userData.role !== 'admin' && userData.role !== 'system_admin') {
                 this.showAccessDenied('Accès réservé aux administrateurs');
                 resolve(false);
                 return;
